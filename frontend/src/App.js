@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Sidebar from "./components/Sidebar";
-import MainContent from "./components/MainContent";
+import Sidebar from "./components/SideBar/Sidebar.jsx";
+import MainContent from "./components/MainContent.jsx";
 import "./App.css";
 
 function App() {
@@ -20,7 +20,6 @@ function App() {
       <MainContent />
 
       <div className="user-list">
-        <h1>Usuarios</h1>
         <ul>
           {usuarios.map((user) => (
             <li key={user.id}>

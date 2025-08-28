@@ -1,34 +1,77 @@
 import React from "react";
 import "./MainContent.css";
+import videoBg from '../assets/iphilgoody_7132704107214802218.mp4';
 
-// Datos de ejemplo (puedes reemplazar por datos desde backend)
-const items = [
+const reviews = [
   {
-    title: "New Film Release",
-    date: "August 2025",
-    excerpt: "Our latest film just dropped. Explore behind the scenes.",
-    image: "https://source.unsplash.com/800x400/?film"
+    img: "enlace",
+    title: "titulo",
+    date: "fecha",
+    text: "Tinfo"
+  },  
+  {
+    img: "enlace",
+    title: "titulo",
+    date: "fecha",
+    text: "Tinfo"
   },
   {
-    title: "Award-Winning Campaign",
-    date: "July 2025",
-    excerpt: "We just won Best Commercial at the Ad Awards.",
-    image: "https://source.unsplash.com/800x400/?camera"
+    img: "enlace",
+    title: "titulo",
+    date: "fecha",
+    text: "Tinfo"
+  },
+    {
+    img: "enlace",
+    title: "titulo",
+    date: "fecha",
+    text: "Tinfo"
+  },
+    {
+    img: "enlace",
+    title: "titulo",
+    date: "fecha",
+    text: "Tinfo"
+  },
+    {
+    img: "enlace",
+    title: "titulo",
+    date: "fecha",
+    text: "Tinfo"
+  },
+    {
+    img: "enlace",
+    title: "titulo",
+    date: "fecha",
+    text: "Tinfo"
   }
 ];
 
 const MainContent = () => {
   return (
-    <main className="main-content">
-      {items.map((item, index) => (
-        <div key={index} className="card">
-          <img src={item.image} alt={item.title} />
-          <h2>{item.title}</h2>
-          <p className="date">{item.date}</p>
-          <p className="excerpt">{item.excerpt}</p>
-        </div>
-      ))}
-    </main>
+    <div className="page">
+      {/* Video Superior */}
+      <section className="video-section">
+        <video src={videoBg} autoPlay loop muted />
+      </section>
+
+      {/* Reviews */}
+      <section className="reviews-section">
+        {reviews.map((review, index) => (
+          <div
+            className={`review-card ${index % 2 === 1 ? "reverse" : ""}`}
+            key={index}
+          >
+            <img src={review.img} alt={review.title} />
+            <div className="review-text">
+              <h2>{review.title}</h2>
+              <span className="date">{review.date}</span>
+              <p>{review.text}</p>
+            </div>
+          </div>
+        ))}
+      </section>
+    </div>
   );
 };
 
