@@ -4,7 +4,7 @@ import "./Sidebar.css";
 const Sidebar = () => {
   return (
     <aside className="sidebar">
-      <div className="logo">SMUGGLER</div>
+      <div className="logo">TGOFILMS</div>
       <nav className="nav">
         <ul>
           <li><a href="#">Commercial</a></li>

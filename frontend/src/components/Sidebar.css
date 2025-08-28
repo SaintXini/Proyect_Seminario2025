@@ -1,41 +1,41 @@
 .sidebar {
   position: fixed;
-  width: 220px;
+  width: 240px;
   height: 100vh;
-  background-color: #f5f0e9;
+  background-color: #f0eae0;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #ddd;
 }
 
 .logo {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 2rem;
   color: #222;
+  letter-spacing: 1px;
 }
 
 .nav ul {
   list-style: none;
   padding: 0;
+  margin: 2rem 0;
 }
 
 .nav li {
-  margin: 0.7rem 0;
+  margin: 0.8rem 0;
 }
 
 .nav a {
   text-decoration: none;
-  color: #222;
-  font-weight: 500;
+  color: #333;
+  font-size: 1rem;
 }
 
 .socials a {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #666;
   text-decoration: none;
+  color: #666;
   font-size: 0.9rem;
+  margin-bottom: 0.4rem;
 }
