@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  display: flex;
+  background-color: #f5f0e9;
+  font-family: 'Helvetica Neue', sans-serif;
 }
 
 .App-logo {

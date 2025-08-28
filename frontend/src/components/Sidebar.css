@@ -1,0 +1,41 @@
+.sidebar {
+  position: fixed;
+  width: 220px;
+  height: 100vh;
+  background-color: #f5f0e9;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #222;
+}
+
+.nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.nav li {
+  margin: 0.7rem 0;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #222;
+  font-weight: 500;
+}
+
+.socials a {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #666;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
