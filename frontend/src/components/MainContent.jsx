@@ -1,26 +1,20 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "./MainContent.css";
 
-// Datos de ejemplo (puedes reemplazar por datos desde backend)
-const items = [
-  {
-    title: "New Film Release",
-    date: "August 2025",
-    excerpt: "Our latest film just dropped. Explore behind the scenes.",
-    image: "https://source.unsplash.com/800x400/?film"
-  },
-  {
-    title: "Award-Winning Campaign",
-    date: "July 2025",
-    excerpt: "We just won Best Commercial at the Ad Awards.",
-    image: "https://source.unsplash.com/800x400/?camera"
-  }
-];
-
 const MainContent = () => {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/projects/")
+      .then((res) => setProjects(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <main className="main-content">
-      {items.map((item, index) => (
+      {projects.map((item, index) => (
         <div key={index} className="card">
           <img src={item.image} alt={item.title} />
           <h2>{item.title}</h2>
