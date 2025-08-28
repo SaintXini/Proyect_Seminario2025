@@ -32,6 +32,6 @@ def get_projects():
             "title": "Commercial Campaign",
             "date": "July 2025",
             "excerpt": "Award-winning advertisement film.",
-            "image": "https://source.unsplash.com/800x450/?film"
+            "image": "https://source.unsplash.com/800x450/?fim"
         }
     ]
