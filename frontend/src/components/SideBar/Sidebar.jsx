@@ -1,5 +1,5 @@
-import React from "react";
 import { FaInstagram, FaXTwitter, FaLinkedin } from "react-icons/fa6";
+import { Link } from "react-router-dom"; // 👈 Importa Link
 import "./Sidebar.css";
 
 const Sidebar = () => {
@@ -9,16 +9,16 @@ const Sidebar = () => {
         <div className="logo">TGOFILMS</div>
         <nav className="nav">
           <ul>
-            <li><a href="#">Commercial</a></li>
-            <li><a href="#">Music Video</a></li>
-            <li><a href="#">Film & TV</a></li>
-            <li><a href="#">Work</a></li>
-            <li><a href="#">About</a></li>
+            <li><Link to="/">Commercial</Link></li>
+            <li><Link to="/">Music Video</Link></li>
+            <li><Link to="/">Film & TV</Link></li>
+            <li><Link to="/portafolio">Portafolio</Link></li>
+            <li><Link to="/">About</Link></li>
           </ul>
         </nav>
       </header>
 
-      {/* Redes sociales separadas */}
+      {/* Redes sociales */}
       <div className="socials-fixed">
         <a href="#"><FaInstagram /></a>
         <a href="#"><FaXTwitter /></a>

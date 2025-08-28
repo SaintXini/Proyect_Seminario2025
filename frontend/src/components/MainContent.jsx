@@ -2,67 +2,57 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./MainContent.css";
 import videoBg from '../assets/iphilgoody_7132704107214802218.mp4';
+import img1 from './ImgMainContent/1.png'
+import img2 from './ImgMainContent/2.png'
+import img3 from './ImgMainContent/3.png'
+import img4 from './ImgMainContent/4.png'
+import img5 from './ImgMainContent/5.png'
+import img6 from './ImgMainContent/6.png'
+import img7 from './ImgMainContent/5.png'
 
-<<<<<<< HEAD
+
 const reviews = [
   {
-    img: "enlace",
-    title: "titulo",
-    date: "fecha",
+    img: img1,
+    title: "Cambio de Entorno",
+    date: "Febrero 27, 2019",
     text: "Tinfo"
   },  
   {
-    img: "enlace",
-    title: "titulo",
-    date: "fecha",
+    img: img2,
+    title: "Barriletes de Santiago Sacatepequez,Guatemala 👌🏻",
+    date: "Noviembre 3,2019",
     text: "Tinfo"
   },
   {
-    img: "enlace",
-    title: "titulo",
-    date: "fecha",
+    img: img3,
+    title: "Ready for Today 👌🏻",
+    date: "Septiembre 7,2018",
     text: "Tinfo"
   },
     {
-    img: "enlace",
-    title: "titulo",
-    date: "fecha",
+    img: img4,
+    title: "Film is NOT dead!! 🎥",
+    date: "Agosto 9, 2018",
     text: "Tinfo"
   },
     {
-    img: "enlace",
-    title: "titulo",
-    date: "fecha",
+    img: img5,
+    title: "Mientes Video con BillycMusic",
+    date: "Marzo 18,2019",
     text: "Tinfo"
   },
     {
-    img: "enlace",
-    title: "titulo",
-    date: "fecha",
-    text: "Tinfo"
-  },
-    {
-    img: "enlace",
-    title: "titulo",
-    date: "fecha",
+    img: img6,
+    title: "Videoclip con Legionguate ",
+    date: "Julio 18,2018",
     text: "Tinfo"
   }
 ];
 
-=======
->>>>>>> origin/main
 const MainContent = () => {
-  const [projects, setProjects] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:8000/projects/")
-      .then((res) => setProjects(res.data))
-      .catch((err) => console.error(err));
-  }, []);
-
   return (
-<<<<<<< HEAD
+
     <div className="page">
       {/* Video Superior */}
       <section className="video-section">
@@ -86,18 +76,7 @@ const MainContent = () => {
         ))}
       </section>
     </div>
-=======
-    <main className="main-content">
-      {projects.map((item, index) => (
-        <div key={index} className="card">
-          <img src={item.image} alt={item.title} />
-          <h2>{item.title}</h2>
-          <p className="date">{item.date}</p>
-          <p className="excerpt">{item.excerpt}</p>
-        </div>
-      ))}
-    </main>
->>>>>>> origin/main
+
   );
 };
 
