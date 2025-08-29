@@ -14,6 +14,8 @@ const Sidebar = () => {
             <li><Link to="/">Film & TV</Link></li>
             <li><Link to="/portafolio">Portafolio</Link></li>
             <li><Link to="/">About</Link></li>
+            <li><Link to="/">Sing IN</Link></li>
+
           </ul>
         </nav>
       </header>
