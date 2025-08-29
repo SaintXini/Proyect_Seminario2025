@@ -1,5 +1,5 @@
 import { FaInstagram, FaXTwitter, FaLinkedin } from "react-icons/fa6";
-import { Link } from "react-router-dom"; // 👈 Importa Link
+import { Link } from "react-router-dom"; 
 import "./Sidebar.css";
 
 const Sidebar = () => {
@@ -9,10 +9,11 @@ const Sidebar = () => {
         <div className="logo">TGOFILMS</div>
         <nav className="nav">
           <ul>
-            <li><Link to="/">Commercial</Link></li>
-            <li><Link to="/">Music Video</Link></li>
+            <li><Link to="/">Inicio</Link></li>
+            <li><Link to="/portafolio">Videos</Link></li>
+            <li><Link to="/foto">Fotos</Link></li>
+            <li><Link to="/">Servicios</Link></li>
             <li><Link to="/">Film & TV</Link></li>
-            <li><Link to="/portafolio">Portafolio</Link></li>
             <li><Link to="/">About</Link></li>
           </ul>
         </nav>

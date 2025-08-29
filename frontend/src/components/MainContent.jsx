@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./MainContent.css";
-import videoBg from '../assets/iphilgoody_7132704107214802218.mp4';
+import videoBg from '../assets/Cinema Projector intro.mp4';
 import img1 from './ImgMainContent/1.png'
 import img2 from './ImgMainContent/2.png'
 import img3 from './ImgMainContent/3.png'
 import img4 from './ImgMainContent/4.png'
 import img5 from './ImgMainContent/5.png'
 import img6 from './ImgMainContent/6.png'
-import img7 from './ImgMainContent/5.png'
-
 
 const reviews = [
   {
