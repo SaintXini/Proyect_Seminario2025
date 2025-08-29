@@ -1,0 +1,82 @@
+/* 🔹 Contenedor general de la galería */
+.gallery-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 100px 60px 60px; /* Espacio para la barra de menú */
+  background-color: #f8f3e7; /* Fondo beige */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 🔹 Tarjeta individual */
+.video-card {
+  background-color: #f8f3e7; /* Mantener el fondo uniforme */
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: none; /* Diseño limpio, sin sombra pesada */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.video-card:hover {
+  transform: scale(1.02);
+}
+
+/* 🔹 Videos */
+.video-card video {
+  width: 100%;
+  height: 200px; /* 🔥 Altura fija para uniformidad */
+  object-fit: cover; /* Ajuste para que se vea bien */
+  border-radius: 10px;
+}
+
+/* 🔹 Contenedor de la información */
+.video-info {
+  display: flex;
+  justify-content: space-between; /* Alinear a izq, centro y der */
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f8f3e7; /* Fondo uniforme */
+  font-size: 14px;
+  font-weight: bold;
+  color: #222;
+}
+
+/* 🔹 Estilos individuales para textos */
+.video-info .company {
+  text-align: left;
+  flex: 1;
+}
+
+.video-info .title {
+  text-align: center;
+  flex: 1;
+}
+
+.video-info .director {
+  text-align: right;
+  flex: 1;
+}
+
+/* 🔹 Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .gallery-container {
+    grid-template-columns: 1fr 1fr; /* 2 columnas en tablets */
+    padding: 80px 20px;
+  }
+
+  .video-card video {
+    height: 180px; /* Ajuste en móviles */
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-container {
+    grid-template-columns: 1fr; /* 1 columna en móviles */
+  }
+
+  .video-card video {
+    height: 160px;
+  }
+}
