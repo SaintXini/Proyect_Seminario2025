@@ -15,6 +15,7 @@ const Sidebar = () => {
             <li><Link to="/servicios">Servicios</Link></li>
             <li><Link to="/">Film & TV</Link></li>
             <li><Link to="/inicio">About</Link></li>
+
           </ul>
         </nav>
       </header>
