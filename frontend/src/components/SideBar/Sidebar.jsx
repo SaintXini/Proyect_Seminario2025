@@ -12,9 +12,9 @@ const Sidebar = () => {
             <li><Link to="/">Inicio</Link></li>
             <li><Link to="/portafolio">Videos</Link></li>
             <li><Link to="/foto">Fotos</Link></li>
-            <li><Link to="/">Servicios</Link></li>
+            <li><Link to="/servicios">Servicios</Link></li>
             <li><Link to="/">Film & TV</Link></li>
-            <li><Link to="/">About</Link></li>
+            <li><Link to="/inicio">About</Link></li>
           </ul>
         </nav>
       </header>

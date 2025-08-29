@@ -3,8 +3,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Siempre 3 columnas en desktop */
   gap: 20px;
-  padding: 100px 60px 60px; /* Espacio para la barra de menú */
-  background-color: #f8f3e7; /* Fondo beige */
+  padding: 100px 60px 60px; 
+  background-color: #f8f3e7; 
   min-height: 100vh;
   box-sizing: border-box;
 }
@@ -35,10 +35,10 @@
 /* 🔹 Contenedor de la información */
 .video-info {
   display: flex;
-  justify-content: space-between; /* Alinear izq, centro y der */
+  justify-content: space-between; 
   align-items: center;
   padding: 8px 12px;
-  background-color: #f8f3e7; /* Fondo uniforme */
+  background-color: #f8f3e7; 
   font-size: 14px;
   font-weight: bold;
   color: #222;
@@ -63,22 +63,21 @@
 /* 🔹 Responsividad para pantallas medianas */
 @media (max-width: 768px) {
   .gallery-container {
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+    grid-template-columns: repeat(2, 1fr); 
     padding: 80px 20px;
   }
 
   .video-card video {
-    height: 220px; /* 🔼 Aumentado para tablets */
+    height: 220px; 
   }
 }
 
-/* 🔹 Responsividad para pantallas pequeñas */
 @media (max-width: 480px) {
   .gallery-container {
-    grid-template-columns: 1fr; /* 1 columna en móviles */
+    grid-template-columns: 1fr; 
   }
 
   .video-card video {
-    height: 200px; /* 🔼 Aumentado para móviles */
+    height: 200px; 
   }
 }

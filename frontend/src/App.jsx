@@ -5,6 +5,8 @@ import MainContent from "./components/MainContent";
 import VideoGallery from "./components/Portafolio/components/VideoGallery";
 import VideoPage from "./components/Portafolio/components/VideoPage";
 import PortafolioSlider from "./components/PortafolioSlider/PortfolioSlider";
+import PremiumPlans from "./components/planes/PremiumPlans"
+import Ingreso from "./components/login/Ingreso"
 import "./App.css";
 
 function App() {
@@ -16,6 +18,9 @@ function App() {
         <Route path="/portafolio" element={<VideoGallery />} />
         <Route path="/video/:id" element={<VideoPage />} />
         <Route path="/foto" element={<PortafolioSlider />} />
+        <Route path="/servicios" element={<PremiumPlans />} />
+        <Route path="/inicio" element={<Ingreso />} />
+
       </Routes>
     </>
   );
