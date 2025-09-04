@@ -7,6 +7,7 @@ import VideoPage from "./components/Portafolio/components/VideoPage";
 import PortafolioSlider from "./components/PortafolioSlider/PortfolioSlider";
 import PremiumPlans from "./components/planes/PremiumPlans"
 import Ingreso from "./components/login/Ingreso"
+import M_Mdmin from "./components/modulo_admin/M_Mdmin" 
 import "./App.css";
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
         <Route path="/foto" element={<PortafolioSlider />} />
         <Route path="/servicios" element={<PremiumPlans />} />
         <Route path="/inicio" element={<Ingreso />} />
-
+        <Route path="/admin" element={<M_Mdmin />} />
       </Routes>
     </>
   );
