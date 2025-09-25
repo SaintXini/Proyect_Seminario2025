@@ -1,3 +1,21 @@
+/* === Reset básico === */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dark {
+  background: linear-gradient(to bottom right, #111827, #1e3a8a, #6d28d9);
+  color: white;
+}
+
+.light {
+  background: linear-gradient(to bottom right, #fff1f2, #fff7ed, #ffe4e6);
+  color: #111;
+}
+
+/* === Animaciones === */
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   25% { transform: translateY(-10px) rotate(1deg); }
@@ -114,6 +132,7 @@
   100% { transform: translateX(-33.333%); }
 }
 
+/* === Clases utilitarias para usar en JSX === */
 .bg-size-200 {
   background-size: 200% 200%;
 }
