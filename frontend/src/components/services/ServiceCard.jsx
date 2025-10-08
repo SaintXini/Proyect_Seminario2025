@@ -1,4 +1,3 @@
-// src/components/services/ServiceCard.js
 import React from 'react';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 

@@ -1,4 +1,3 @@
-// src/components/ProjectsSection/ProjectsGrid.jsx
 import React from 'react';
 import ProjectCard from './ProjectCard';
 

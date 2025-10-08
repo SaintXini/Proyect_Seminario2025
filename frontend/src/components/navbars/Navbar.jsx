@@ -12,7 +12,8 @@ const Navbar = ({
   toggleLanguage, 
   toggleMobileMenu, 
   setActiveSection, 
-  setMobileMenuOpen 
+  setMobileMenuOpen,
+  onLoginClick  // Nueva prop para manejar el click en login
 }) => {
   const menuItems = ['inicio', 'proyectos', 'servicios', 'contacto'];
 
@@ -79,11 +80,15 @@ const Navbar = ({
               </button>
             ))}
             
-            <button className={`font-medium px-8 py-3 rounded-2xl transition-all duration-300 hover:scale-105 transform relative overflow-hidden group ${
-              darkMode
-                ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-lg shadow-blue-500/25'
-                : 'bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 text-white shadow-lg shadow-rose-500/25'
-            }`}>
+            {/* BOTÓN DE LOGIN DESKTOP - MODIFICADO */}
+            <button 
+              onClick={onLoginClick}
+              className={`font-medium px-8 py-3 rounded-2xl transition-all duration-300 hover:scale-105 transform relative overflow-hidden group ${
+                darkMode
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-lg shadow-blue-500/25'
+                  : 'bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 text-white shadow-lg shadow-rose-500/25'
+              }`}
+            >
               <span className="relative z-10">{t.login}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
@@ -159,11 +164,18 @@ const Navbar = ({
                   {t[item]}
                 </button>
               ))}
-              <button className={`font-medium px-6 py-3 rounded-2xl transition-all duration-300 w-fit ${
-                darkMode
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-lg shadow-blue-500/25'
-                  : 'bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 text-white shadow-lg shadow-rose-500/25'
-              }`}>
+              {/* BOTÓN DE LOGIN MÓVIL - MODIFICADO */}
+              <button 
+                onClick={() => {
+                  onLoginClick();
+                  setMobileMenuOpen(false);
+                }}
+                className={`font-medium px-6 py-3 rounded-2xl transition-all duration-300 w-fit ${
+                  darkMode
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-lg shadow-blue-500/25'
+                    : 'bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-400 hover:to-orange-400 text-white shadow-lg shadow-rose-500/25'
+                }`}
+              >
                 {t.login}
               </button>
             </div>

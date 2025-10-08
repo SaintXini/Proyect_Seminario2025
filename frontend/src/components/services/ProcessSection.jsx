@@ -1,4 +1,3 @@
-// src/components/services/ProcessSection.js
 import React from 'react';
 import ProcessStep from './ProcessStep';
 

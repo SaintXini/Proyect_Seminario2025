@@ -1,4 +1,3 @@
-// src/components/services/BackgroundEffects.js
 import React from 'react';
 
 const BackgroundEffects = ({ darkMode }) => {

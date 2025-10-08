@@ -1,4 +1,3 @@
-// src/components/StorySection.js
 import React from 'react';
 import { Zap } from 'lucide-react';
 

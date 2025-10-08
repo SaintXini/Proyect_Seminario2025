@@ -1,4 +1,3 @@
-// src/components/ProjectsSection/index.js
 import React from 'react';
 import ProjectsHeader from './proyectos/ProjectsHeader';
 import CategoryFilter from './proyectos/CategoryFilter';

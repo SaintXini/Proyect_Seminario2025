@@ -1,4 +1,3 @@
-// src/components/services/ServicesHeader.js
 import React from 'react';
 
 const ServicesHeader = ({ darkMode, t }) => {

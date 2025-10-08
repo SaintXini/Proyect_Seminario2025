@@ -1,4 +1,3 @@
-// src/components/ProjectsSection/ProjectsHeader.jsx
 import React from 'react';
 
 const ProjectsHeader = ({ darkMode }) => {

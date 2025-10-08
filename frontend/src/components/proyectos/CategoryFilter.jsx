@@ -1,4 +1,3 @@
-// src/components/ProjectsSection/CategoryFilter.jsx
 import React from 'react';
 
 const CategoryFilter = ({ darkMode, categories, activeCategory, setActiveCategory }) => {

@@ -1,4 +1,3 @@
-// src/components/ServicesSection.js
 import React from 'react';
 import ServicesHeader from './services/ServicesHeader';
 import ServiceCard from './services/ServiceCard';

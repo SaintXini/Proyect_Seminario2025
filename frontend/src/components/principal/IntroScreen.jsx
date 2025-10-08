@@ -1,4 +1,3 @@
-// src/components/IntroScreen.js
 import React from 'react';
 
 const IntroScreen = () => {

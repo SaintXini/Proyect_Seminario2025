@@ -1,4 +1,3 @@
-// src/components/ArtistsSection.js
 import React from 'react';
 import { Star } from 'lucide-react';
 

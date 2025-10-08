@@ -1,4 +1,3 @@
-// src/components/services/ProcessStep.js
 import React from 'react';
 
 const ProcessStep = ({ step, darkMode, index }) => {

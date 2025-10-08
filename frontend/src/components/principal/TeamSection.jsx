@@ -1,4 +1,3 @@
-// src/components/TeamSection.js
 import React from 'react';
 
 const TeamSection = ({ darkMode, t }) => {

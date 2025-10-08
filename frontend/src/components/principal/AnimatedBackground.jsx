@@ -1,4 +1,3 @@
-// src/components/AnimatedBackground.js
 import React from 'react';
 import { Sparkles, Star } from 'lucide-react';
 

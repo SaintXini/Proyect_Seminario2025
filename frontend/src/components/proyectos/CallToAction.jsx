@@ -1,4 +1,3 @@
-// src/components/ProjectsSection/CallToAction.jsx
 import React from 'react';
 
 const CallToAction = () => {
