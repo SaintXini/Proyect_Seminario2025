@@ -28,24 +28,28 @@ const Navbar = ({
           {/* Enhanced Logo */}
           <div className="flex items-center space-x-3 group cursor-pointer">
             <div className="relative">
-              <svg viewBox="0 0 60 60" className="w-10 h-10 transition-transform duration-300 group-hover:scale-110">
-                <defs>
-                  <linearGradient id="navGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#dc2626" />
-                    <stop offset="100%" stopColor="#f59e0b" />
-                  </linearGradient>
-                </defs>
+              <svg viewBox="0 0 200 200" className="w-8 h-8">
+                {/* Forma tipo tau estilizada */}
                 <path
-                  d="M10 15 L10 30 Q10 37.5 17.5 37.5 L22.5 37.5 Q30 37.5 30 30 L30 15"
-                  fill="none"
-                  stroke="url(#navGradient)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
+                  d="M60 60 H140 Q145 60 145 70 V85 H115 V140 H95 V85 H60 Z"
+                  fill="#dc2626"
                 />
+
+                {/* Cubo gris con número 1 */}
                 <g>
-                  <rect x="35" y="22.5" width="10" height="10" fill="url(#navGradient)"/>
-                  <path d="M35 22.5 L40 17.5 L50 17.5 L45 22.5 Z" fill="#b91c1c"/>
-                  <path d="M45 22.5 L50 17.5 L50 27.5 L45 32.5 Z" fill="#991b1b"/>
+                  <rect x="115" y="85" width="30" height="30" fill="#9ca3af" />
+                  <path d="M115 85 L130 70 L160 70 L145 85 Z" fill="#d1d5db" />
+                  <path d="M145 85 L160 70 L160 100 L145 115 Z" fill="#6b7280" />
+                  <text
+                    x="130"
+                    y="105"
+                    textAnchor="middle"
+                    fontSize="20"
+                    fontWeight="bold"
+                    fill="#ffffff"
+                  >
+                    1
+                  </text>
                 </g>
               </svg>
               <div className="absolute inset-0 bg-red-500/20 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -54,7 +58,6 @@ const Navbar = ({
               The Great One
             </span>
           </div>
-
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             {menuItems.map((item) => (
