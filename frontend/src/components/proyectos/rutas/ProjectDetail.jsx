@@ -6,6 +6,49 @@ const ProjectDetail = ({ project, darkMode, t, onBack }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // 🎬 Función para detectar el tipo de medio
+  const getMediaType = useCallback((url) => {
+    if (!url) return 'image';
+    
+    const urlLower = url.toLowerCase();
+    
+    // YouTube
+    if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) {
+      return 'youtube';
+    }
+    
+    // Vimeo
+    if (urlLower.includes('vimeo.com')) {
+      return 'vimeo';
+    }
+    
+    // Video files
+    if (urlLower.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/)) {
+      return 'video';
+    }
+    
+    // Audio files
+    if (urlLower.match(/\.(mp3|wav|ogg|m4a|aac|flac)$/)) {
+      return 'audio';
+    }
+    
+    return 'image';
+  }, []);
+
+  // 🎥 Función para obtener el ID de YouTube
+  const getYouTubeId = useCallback((url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  }, []);
+
+  // 🎬 Función para obtener el ID de Vimeo
+  const getVimeoId = useCallback((url) => {
+    const regExp = /vimeo\.com\/(\d+)/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+  }, []);
+
   // ✅ Funciones memorizadas para evitar recreaciones en cada render
   const openLightbox = useCallback((index) => {
     setCurrentImageIndex(index);
@@ -142,43 +185,140 @@ const ProjectDetail = ({ project, darkMode, t, onBack }) => {
           </h2>
         </div>
 
-        {/* 🧱 Grid de galería */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {project.gallery.map((image, index) => (
-            <div
-              key={index}
-              onClick={() => openLightbox(index)}
-              className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 hover:scale-105 ${
-                darkMode
-                  ? 'bg-black/20 backdrop-blur-xl border border-white/10'
-                  : 'bg-white/40 backdrop-blur-xl border border-white/20'
-              }`}
-              style={{
-                animationDelay: `${index * 0.1}s`,
-                paddingBottom: '75%', // Relación 4:3
-                position: 'relative',
-              }}
-            >
-              <div className="absolute inset-0">
-                <img
-                  src={image}
-                  alt={`${project.title} - Imagen ${index + 1}`}
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                  style={{ objectPosition: 'center' }}
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute bottom-4 left-4 right-4">
-                  <p className="text-white font-medium text-sm">
-                    Imagen {index + 1} de {project.gallery.length}
-                  </p>
+        {/* 🧱 Grid de galería - MEJORADO CON VIDEOS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {project.gallery.map((media, index) => {
+            const mediaType = getMediaType(media);
+            const youtubeId = mediaType === 'youtube' ? getYouTubeId(media) : null;
+            const vimeoId = mediaType === 'vimeo' ? getVimeoId(media) : null;
+
+            return (
+              <div
+                key={index}
+                onClick={() => openLightbox(index)}
+                className="group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 hover:scale-105"
+                style={{
+                  animationDelay: `${index * 0.1}s`,
+                  height: '450px',
+                  width: '100%',
+                  position: 'relative',
+                }}
+              >
+                <div className={`absolute inset-0 ${
+                  darkMode
+                    ? 'bg-black/20 backdrop-blur-xl border border-white/10'
+                    : 'bg-white/40 backdrop-blur-xl border border-white/20'
+                } rounded-2xl`}>
+                  
+                  {/* 🖼️ IMAGEN */}
+                  {mediaType === 'image' && (
+                    <div className="absolute inset-0 w-full h-full">
+                      <img
+                        src={media}
+                        alt={`${project.title} - Imagen ${index + 1}`}
+                        className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+                        style={{ 
+                          objectPosition: 'center',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* 🎥 VIDEO DE YOUTUBE */}
+                  {mediaType === 'youtube' && youtubeId && (
+                    <div className="absolute inset-0 w-full h-full">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&mute=1`}
+                        title={`${project.title} - Video ${index + 1}`}
+                        className="w-full h-full pointer-events-none"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                      {/* Overlay para hacer click */}
+                      <div className="absolute inset-0 bg-transparent" />
+                    </div>
+                  )}
+
+                  {/* 🎬 VIDEO DE VIMEO */}
+                  {mediaType === 'vimeo' && vimeoId && (
+                    <div className="absolute inset-0 w-full h-full">
+                      <iframe
+                        src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&muted=1`}
+                        title={`${project.title} - Video ${index + 1}`}
+                        className="w-full h-full pointer-events-none"
+                        frameBorder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                      />
+                      {/* Overlay para hacer click */}
+                      <div className="absolute inset-0 bg-transparent" />
+                    </div>
+                  )}
+
+                  {/* 📹 VIDEO LOCAL (MP4, WEBM, etc.) - Con autoplay en hover */}
+                  {mediaType === 'video' && (
+                    <div className="absolute inset-0 w-full h-full">
+                      <video
+                        src={media}
+                        className="w-full h-full object-cover"
+                        muted
+                        loop
+                        playsInline
+                        onMouseEnter={(e) => e.target.play()}
+                        onMouseLeave={(e) => {
+                          e.target.pause();
+                          e.target.currentTime = 0;
+                        }}
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        Tu navegador no soporta el elemento de video.
+                      </video>
+                    </div>
+                  )}
+
+                  {/* 🎵 AUDIO (MP3, WAV, etc.) */}
+                  {mediaType === 'audio' && (
+                    <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-8 bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+                      <div className="text-center">
+                        <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                          </svg>
+                        </div>
+                        <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                          Audio {index + 1}
+                        </h3>
+                        <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                          Click para reproducir
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 🏷️ Overlay con información */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <p className="text-white font-medium text-sm">
+                        {mediaType === 'image' && `Imagen ${index + 1} de ${project.gallery.length}`}
+                        {mediaType === 'youtube' && `Video de YouTube ${index + 1}`}
+                        {mediaType === 'vimeo' && `Video de Vimeo ${index + 1}`}
+                        {mediaType === 'video' && `Video ${index + 1}`}
+                        {mediaType === 'audio' && `Audio ${index + 1}`}
+                      </p>
+                      <p className="text-white/80 text-xs mt-1">
+                        Click para ver en pantalla completa
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* 💡 Lightbox */}
+        {/* 💡 Lightbox - MEJORADO PARA TODOS LOS MEDIOS */}
         {selectedImage && (
           <div
             className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
@@ -208,17 +348,107 @@ const ProjectDetail = ({ project, darkMode, t, onBack }) => {
               </button>
             )}
 
-            {/* 🖼️ Imagen ampliada */}
+            {/* 🖼️ Contenedor de medios ampliado */}
             <div
               className="relative max-w-7xl w-full h-full flex items-center justify-center p-8"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
-                src={selectedImage}
-                alt={`${project.title} - Vista ampliada`}
-                className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl"
-                style={{ maxHeight: '85vh' }}
-              />
+              {(() => {
+                const mediaType = getMediaType(selectedImage);
+                const youtubeId = mediaType === 'youtube' ? getYouTubeId(selectedImage) : null;
+                const vimeoId = mediaType === 'vimeo' ? getVimeoId(selectedImage) : null;
+
+                // IMAGEN
+                if (mediaType === 'image') {
+                  return (
+                    <img
+                      src={selectedImage}
+                      alt={`${project.title} - Vista ampliada`}
+                      className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl"
+                      style={{ maxHeight: '85vh' }}
+                    />
+                  );
+                }
+
+                // VIDEO DE YOUTUBE
+                if (mediaType === 'youtube' && youtubeId) {
+                  return (
+                    <div className="w-full max-w-6xl aspect-video rounded-lg overflow-hidden shadow-2xl">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
+                        title={`${project.title} - Video de YouTube`}
+                        className="w-full h-full"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  );
+                }
+
+                // VIDEO DE VIMEO
+                if (mediaType === 'vimeo' && vimeoId) {
+                  return (
+                    <div className="w-full max-w-6xl aspect-video rounded-lg overflow-hidden shadow-2xl">
+                      <iframe
+                        src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1`}
+                        title={`${project.title} - Video de Vimeo`}
+                        className="w-full h-full"
+                        frameBorder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  );
+                }
+
+                // VIDEO LOCAL
+                if (mediaType === 'video') {
+                  return (
+                    <video
+                      src={selectedImage}
+                      className="max-w-full max-h-[85vh] w-auto h-auto rounded-lg shadow-2xl"
+                      controls
+                      autoPlay
+                      preload="auto"
+                    >
+                      Tu navegador no soporta el elemento de video.
+                    </video>
+                  );
+                }
+
+                // AUDIO
+                if (mediaType === 'audio') {
+                  return (
+                    <div className="w-full max-w-2xl bg-gradient-to-br from-purple-600/30 to-pink-600/30 backdrop-blur-xl rounded-2xl p-12 shadow-2xl border border-white/10">
+                      <div className="text-center mb-8">
+                        <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                          </svg>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-2">
+                          Reproduciendo Audio
+                        </h3>
+                        <p className="text-white/70">
+                          {project.title}
+                        </p>
+                      </div>
+                      <audio
+                        src={selectedImage}
+                        className="w-full"
+                        controls
+                        autoPlay
+                        preload="auto"
+                      >
+                        Tu navegador no soporta el elemento de audio.
+                      </audio>
+                    </div>
+                  );
+                }
+
+                return null;
+              })()}
             </div>
 
             {/* ➡️ Botón siguiente */}
@@ -234,7 +464,7 @@ const ProjectDetail = ({ project, darkMode, t, onBack }) => {
               </button>
             )}
 
-            {/* 📊 Contador de imagen */}
+            {/* 📊 Contador de medio */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-white/10 backdrop-blur-xl rounded-full text-white font-medium">
               {currentImageIndex + 1} / {project.gallery.length}
             </div>

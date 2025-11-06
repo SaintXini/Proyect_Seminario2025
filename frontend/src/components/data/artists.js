@@ -10,7 +10,7 @@ export const artists = [
   },
   {
     name: "Mamboteros",
-    image: "https://scontent.faqb1-2.fna.fbcdn.net/v/t39.30808-6/299823478_403677001870554_580426997838194952_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=OGIcENt43u4Q7kNvwHhSGDp&_nc_oc=AdkGlF2Kz_2aYjEv3Ukbvb42uoRGidahr_bVKmLRJegTHHDw4ktn6nr4TndnVpckmxY&_nc_zt=23&_nc_ht=scontent.faqb1-2.fna&_nc_gid=QsajAdec8B4qWxfoG10Xbg&oh=00_AfamZD8YKVZklkekGBDUHCXcgnauyCrmX87h58-dxdJBrw&oe=68DA1AF3"
+    image: "https://i.imgur.com/sY49q50.png"
   },
   {
     name: "Pedro Cuevas",
@@ -18,7 +18,7 @@ export const artists = [
   },
   {
     name: "Hancer",
-    image: "https://scontent.fgua5-2.fna.fbcdn.net/v/t39.30808-6/539364975_1373401634145326_4852212445483125879_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=L1Q7skT-fIMQ7kNvwFLnY3R&_nc_oc=AdmKnFvKmCMLFhi2JztmW22fH2OroMF6dH-oWia7MoO7B1QEw9a8GQ0J6T-kqYlj73E&_nc_zt=23&_nc_ht=scontent.fgua5-2.fna&_nc_gid=myUW6A9mFL7n4vn1fhdAJA&oh=00_AfYA9OarAOiY9TWr8hgWNneJuN9Ed0fltuZZmom6xD9tKQ&oe=68DA0A86"
+    image: "https://i.imgur.com/cUAcq8j.png"
   },
   {
     name: "LegionGuate",
@@ -31,5 +31,9 @@ export const artists = [
   {
     name: "Miguel Torres",
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face"
+  },
+  {
+    name: "Gaby Asturias",
+    image: "https://i.imgur.com/NLoY4Le.png"
   }
 ];
