@@ -1,8 +1,15 @@
 // LoginPage.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import { User, Shield, Mail, Lock, ArrowLeft, Eye, EyeOff, Phone, Building, Home } from 'lucide-react';
 
+
+const API_URL = ' http://127.0.0.1:5000/api'; // Reemplaza por tu URL real
+
 const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
+  const navigate = useNavigate(); 
   const [selectedRole, setSelectedRole] = useState('client');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -12,7 +19,7 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
     password: '',
     confirmPassword: '',
     name: '',
-    phone: '',
+    telefono: '',
     company: ''
   });
 
@@ -78,64 +85,77 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
 
   const currentT = translations[language] || translations.es;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Validaciones
-    if (!formData.email || !formData.password) {
-      alert(currentT.completeFields);
-      return;
-    }
+  // Validaciones básicas
+  if (!formData.email || !formData.password) {
+    alert(currentT.completeFields);
+    return;
+  }
 
+  try {
     if (isRegistering) {
-      // Validación para registro
-      if (selectedRole === 'client' && !formData.name) {
-        alert(currentT.completeFields);
-        return;
-      }
-
-      if (formData.password !== formData.confirmPassword) {
-        alert(currentT.passwordMismatch);
-        return;
-      }
-
-      // Llamar a la función onLogin con el rol y credenciales
-      console.log('Registro:', { role: selectedRole, ...formData });
-      alert(`${currentT.registerSuccess} ${selectedRole === 'admin' ? currentT.admin : currentT.client}`);
-      
-      // Después del registro exitoso, cambiar a modo login
-      setIsRegistering(false);
-      setFormData({
-        ...formData,
-        confirmPassword: ''
+      // Registro
+      const response = await axios.post(`${API_URL}/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        telefono: formData.phone,
+        company: formData.company,
+        rol: selectedRole
       });
+
+      alert(`${currentT.registerSuccess} ${selectedRole === 'admin' ? currentT.admin : currentT.client}`);
+      setIsRegistering(false);
+      resetForm();
+
+      //Redirigir después del registro
+      if (selectedRole === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/client-dashboard');
+      }
+
     } else {
       // Login
-      console.log('Login:', { role: selectedRole, email: formData.email });
-      
-      // Llamar a la función onLogin que maneja la autenticación
-      onLogin(selectedRole, formData);
+      const response = await axios.post(`${API_URL}/login`, {
+        email: formData.email,
+        password: formData.password
+      });
+
+      alert(`${currentT.loginSuccess} ${selectedRole}`);
+
+      //Redirigir después del login
+      if (selectedRole === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/admin');
+      }
     }
-  };
+  } catch (error) {
+    console.error('Error en login/registro:', error);
+    alert('Ocurrió un error. Verifica tus datos.');
+  }
+};
+const handleInputChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value
+  });
+};
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const resetForm = () => {
-    setFormData({
-      email: '',
-      password: '',
-      confirmPassword: '',
-      name: '',
-      phone: '',
-      company: ''
-    });
-    setIsRegistering(false);
-  };
+const resetForm = () => {
+  setFormData({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    name: '',
+    phone: '',
+    company: ''
+  });
+  setIsRegistering(false);
+};
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${
@@ -502,7 +522,7 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
                         password: '',
                         confirmPassword: '',
                         name: '',
-                        phone: '',
+                        telefono: '',
                         company: ''
                       });
                     }}

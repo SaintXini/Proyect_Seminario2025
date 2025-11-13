@@ -8,16 +8,19 @@ export const Sidebar = ({ activeTab, setActiveTab, onLogout, darkMode, t }) => {
     { id: 'projects', icon: <Video className="w-5 h-5" />, label: t.projects },
     { id: 'clients', icon: <Users className="w-5 h-5" />, label: t.clients },
     { id: 'calendar', icon: <Calendar className="w-5 h-5" />, label: t.calendar },
-    { id: 'financial', icon: <DollarSign className="w-5 h-5" />, label: t.financial },
-    { id: 'inventory', icon: <Package className="w-5 h-5" />, label: t.inventory }
+    { id: 'inventory', icon: <Package className="w-5 h-5" />, label: t.inventory },
+    // Cambiado: antes era solo el ícono del dólar, ahora dice “Finanzas y Recomendaciones”
+    { id: 'finanzasDashboard', icon: <DollarSign className="w-5 h-5" />, label: 'Finanzas y Recomendaciones' },
   ];
 
   return (
-    <div className={`w-64 min-h-screen p-6 ${
-      darkMode 
-        ? 'bg-black/20 backdrop-blur-xl border-r border-white/10' 
-        : 'bg-white/50 backdrop-blur-xl border-r border-white/30'
-    }`}>
+    <div
+      className={`w-64 min-h-screen p-6 ${
+        darkMode 
+          ? 'bg-black/20 backdrop-blur-xl border-r border-white/10' 
+          : 'bg-white/50 backdrop-blur-xl border-r border-white/30'
+      }`}
+    >
       <div className="mb-8">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
           The Great One

@@ -56,19 +56,19 @@ export const FinancialView = ({
             <div className="flex justify-between mb-2">
               <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Planificado</span>
               <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                ${budgetData.total.toLocaleString()}
+                Q{budgetData.total.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between mb-2">
               <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Ejecutado</span>
               <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                ${budgetData.spent.toLocaleString()}
+                Q{budgetData.spent.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
               <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Disponible</span>
               <span className={`font-semibold ${darkMode ? 'text-cyan-300' : 'text-blue-600'}`}>
-                ${budgetData.remaining.toLocaleString()}
+                Q{budgetData.remaining.toLocaleString()}
               </span>
             </div>
           </div>
@@ -82,7 +82,9 @@ export const FinancialView = ({
             {projects.map(project => (
               <div key={project.id} className="flex justify-between">
                 <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} truncate mr-2`}>{project.name}</span>
-                <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>${project.budget.toLocaleString()}</span>
+                <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Q{project.budget.toLocaleString()}
+                </span>
               </div>
             ))}
           </div>
@@ -102,7 +104,7 @@ export const FinancialView = ({
                     {investment.item}
                   </h4>
                   <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    Prioridad: {investment.priority} • ${investment.estimated.toLocaleString()}
+                    Prioridad: {investment.priority} • Q{investment.estimated.toLocaleString()}
                   </p>
                   {investment.notes && (
                     <p className={`text-sm mt-1 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>

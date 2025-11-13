@@ -50,7 +50,7 @@ export const ProjectsView = ({
                     {project.name}
                   </h3>
                   <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {project.client} • {project.status} • ${project.budget.toLocaleString()}
+                    {project.client} • {project.status} • Q{project.budget.toLocaleString()}
                   </p>
                 </div>
                 <div className="flex gap-2">

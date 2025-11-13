@@ -88,6 +88,7 @@ export const ClientsView = ({
         </div>
       </div>
 
+      {/* Clientes Activos */}
       <div className={`p-6 rounded-2xl ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'}`}>
         <h2 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
           {t.activeClients}
@@ -129,7 +130,7 @@ export const ClientsView = ({
                         <span className="font-semibold">{t.totalProjects}:</span> {client.projectsCount}
                       </p>
                       <p className={`text-sm ${darkMode ? 'text-cyan-300' : 'text-blue-600'} font-semibold`}>
-                        <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Presupuesto:</span> ${client.totalBudget.toLocaleString()}
+                        <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Presupuesto:</span> Q{client.totalBudget.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -177,6 +178,7 @@ export const ClientsView = ({
         </div>
       </div>
 
+      {/* Clientes Inactivos */}
       {inactiveClients.length > 0 && (
         <div className={`p-6 rounded-2xl ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'}`}>
           <h2 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
