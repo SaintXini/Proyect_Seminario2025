@@ -57,10 +57,20 @@ from models.usuarios import Usuario
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
+# 🔐 Clave secreta directamente en el código
+app.config['SECRET_KEY'] = 'tgofilms'
+
+# Configurar conexión remota a MySQL (Aiven)
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    'mysql+pymysql://avnadmin:AVNS_YNqSEFDi24xCepaDBqK@'
+    'seminariodb-gruposeminario.f.aivencloud.com:28200/tgofilms'
+    '?ssl=true&ssl_ca=C:\\xampp\\certificados\\aiven\\ca.pem'
+)
+
+# Desactivar seguimiento de modificaciones
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Permitir CORS solo para localhost:3000
+# Inicializar extensiones
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 bcrypt = Bcrypt(app)
 db.init_app(app)
