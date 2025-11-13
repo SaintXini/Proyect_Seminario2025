@@ -40,13 +40,10 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
 
-
-
-
-
-
 # Clave secreta para firmar JWT, la puedes poner en tu .env
 SECRET_KEY = os.getenv('SECRET_KEY', 'tgofilms')
+
+
 
 # Asegurar path correcto
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
@@ -727,5 +724,4 @@ def actualizar_estado_cita(id_cita):
 
 if __name__ == '__main__':
     app.run (debug=True, host='0.0.0.0', port=5000)
-    
     
