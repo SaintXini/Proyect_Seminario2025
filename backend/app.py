@@ -40,10 +40,13 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
 
+
+
+
+
+
 # Clave secreta para firmar JWT, la puedes poner en tu .env
 SECRET_KEY = os.getenv('SECRET_KEY', 'tgofilms')
-
-
 
 # Asegurar path correcto
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
@@ -57,19 +60,13 @@ from models.usuarios import Usuario
 
 
 app = Flask(__name__)
-# 🔐 Clave secreta directamente en el código
-app.config['SECRET_KEY'] = 'tgofilms'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:seminariodb-gruposeminario.f.aivencloud.com:28200/tgofilms'
-
-# Desactivar seguimiento de modificaciones
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Inicializar extensiones
+# Permitir CORS solo para localhost:3000
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 bcrypt = Bcrypt(app)
 db.init_app(app)
-
 
 @app.route('/')
 def index():
@@ -730,4 +727,5 @@ def actualizar_estado_cita(id_cita):
 
 if __name__ == '__main__':
     app.run (debug=True, host='0.0.0.0', port=5000)
+    
     
