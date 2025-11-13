@@ -60,12 +60,7 @@ app = Flask(__name__)
 # 🔐 Clave secreta directamente en el código
 app.config['SECRET_KEY'] = 'tgofilms'
 
-# Configurar conexión remota a MySQL (Aiven)
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    'mysql+pymysql://avnadmin:AVNS_YNqSEFDi24xCepaDBqK@'
-    'seminariodb-gruposeminario.f.aivencloud.com:28200/tgofilms'
-    '?ssl=true&ssl_ca=C:\\xampp\\certificados\\aiven\\ca.pem'
-)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:seminariodb-gruposeminario.f.aivencloud.com:28200/tgofilms'
 
 # Desactivar seguimiento de modificaciones
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -74,6 +69,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 bcrypt = Bcrypt(app)
 db.init_app(app)
+
 
 @app.route('/')
 def index():
