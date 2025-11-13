@@ -12,8 +12,5 @@ pydantic==2.8.2
 
 # Servidor de producción
 gunicorn==23.0.0
-# Para convertir datos a parquet o trabajar con tablas en memoria
 pyarrow==17.0.0
-
-# Dependencia indirecta de jsonschema y pydantic
 rpds-py==0.18.0
