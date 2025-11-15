@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:5000/api';
+const API_URL = 'https://proyecto-seminario2025-mbb3.onrender.com/api';
 
 // Configuración de axios
 const api = axios.create({
