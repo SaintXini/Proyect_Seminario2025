@@ -13,7 +13,7 @@ import ServicesSection from './components/ServicesSection';
 import ContactSection from './components/ContactSection';
 import LoginPage from './components/pagina/LoginPage';
 import {AdminDashboard} from './components/AdminDashboard';
-import ClientDashboard from './components/ClientDashboard'; // NUEVO
+import ClientDashboard from './components/ClientDashboard';
 import { translations } from './components/data/translations';
 import { artists } from './components/data/artists';
 import './styles/animations.css';
@@ -38,7 +38,7 @@ const AppProvider = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('inicio');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [currentUser, setCurrentUser] = useState(null); // NUEVO: Para almacenar datos del usuario
+  const [currentUser, setCurrentUser] = useState(null);
 
   const value = {
     showIntro,
@@ -157,6 +157,7 @@ const MainPage = () => {
         darkMode={darkMode}
         mousePosition={mousePosition}
       />
+
       <Navbar
         darkMode={darkMode}
         language={language}
@@ -170,6 +171,7 @@ const MainPage = () => {
         setMobileMenuOpen={setMobileMenuOpen}
         onLoginClick={handleLoginClick}
       />
+
       <main className="relative z-10 pt-20">
         {renderActiveSection()}
       </main>
@@ -190,35 +192,22 @@ const LoginPageWrapper = () => {
   };
 
   // Función para manejar el login
-  const handleLogin = (role, credentials) => {
-    // Validación de credenciales
-    if (role === 'admin') {
-      // Validación para administrador (reemplaza con tu lógica real)
-      if (credentials.email === 'admin@thegreatone.com' && credentials.password === 'admin123') {
-        setCurrentUser({
-          role: 'admin',
-          email: credentials.email,
-          name: 'Administrador'
-        });
-        navigate('/admin');
-      } else {
-        alert(language === 'es' ? 'Credenciales incorrectas' : 'Incorrect credentials');
-      }
-    } else if (role === 'client') {
-      // Validación para cliente (reemplaza con tu lógica real)
-      // Por ahora, aceptamos cualquier credencial para demo
-      if (credentials.email && credentials.password) {
-        setCurrentUser({
-          role: 'client',
-          email: credentials.email,
-          name: credentials.name || 'Cliente',
-          phone: credentials.phone || '',
-          company: credentials.company || ''
-        });
-        navigate('/client-dashboard');
-      } else {
-        alert(language === 'es' ? 'Por favor completa todos los campos' : 'Please complete all fields');
-      }
+  const handleLogin = (user) => {
+    console.log('Usuario autenticado:', user);
+    
+    // Guardar usuario en el contexto
+    setCurrentUser(user);
+
+    // Redirigir según el rol
+    if (user.rol === 'admin') {
+      console.log('Redirigiendo a /admin');
+      navigate('/admin');
+    } else if (user.rol === 'client' || user.rol === 'cliente') {
+      console.log('Redirigiendo a /client-dashboard');
+      navigate('/client-dashboard');
+    } else {
+      console.error('Rol desconocido:', user.rol);
+      alert('Error: Rol de usuario no reconocido');
     }
   };
 
@@ -228,7 +217,6 @@ const LoginPageWrapper = () => {
       language={language}
       onBackClick={handleBackToHome}
       onLogin={handleLogin}
-      t={translations[language]}
     />
   );
 };
@@ -236,34 +224,12 @@ const LoginPageWrapper = () => {
 // Componente AdminDashboard Wrapper que usa el context
 const AdminDashboardWrapper = () => {
   const navigate = useNavigate();
-  const { darkMode, language, setShowIntro, setActiveSection, setCurrentUser } = useAppContext();
-
-  // Función para manejar el logout
-  const handleLogout = () => {
-    setCurrentUser(null);
-    setShowIntro(true);
-    setActiveSection('inicio');
-    navigate('/');
-  };
-
-  return (
-    <AdminDashboard 
-      darkMode={darkMode} 
-      language={language}
-      onLogout={handleLogout}
-    />
-  );
-};
-
-// NUEVO: Componente ClientDashboard Wrapper que usa el context
-const ClientDashboardWrapper = () => {
-  const navigate = useNavigate();
   const { darkMode, language, setShowIntro, setActiveSection, currentUser, setCurrentUser } = useAppContext();
 
-  // Verificar si el usuario está autenticado
+  // Verificar autenticación
   useEffect(() => {
-    if (!currentUser || currentUser.role !== 'client') {
-      // Si no hay usuario o no es cliente, redirigir al login
+    if (!currentUser || currentUser.rol !== 'admin') {
+      console.log('Usuario no autorizado para admin, redirigiendo a login');
       navigate('/login');
     }
   }, [currentUser, navigate]);
@@ -276,14 +242,50 @@ const ClientDashboardWrapper = () => {
     navigate('/');
   };
 
-  // Si no hay usuario, no renderizar nada (el useEffect redirigirá)
-  if (!currentUser || currentUser.role !== 'client') {
+  // Si no hay usuario autorizado, no renderizar
+  if (!currentUser || currentUser.rol !== 'admin') {
     return null;
   }
 
   return (
-    <ClientDashboard 
-      darkMode={darkMode} 
+    <AdminDashboard
+      darkMode={darkMode}
+      language={language}
+      onLogout={handleLogout}
+    />
+  );
+};
+
+// Componente ClientDashboard Wrapper que usa el context
+const ClientDashboardWrapper = () => {
+  const navigate = useNavigate();
+  const { darkMode, language, setShowIntro, setActiveSection, currentUser, setCurrentUser } = useAppContext();
+
+  // Verificar autenticación
+  useEffect(() => {
+    console.log('ClientDashboard - Usuario actual:', currentUser);
+    if (!currentUser || (currentUser.rol !== 'client' && currentUser.rol !== 'cliente')) {
+      console.log('Usuario no autorizado para cliente, redirigiendo a login');
+      navigate('/login');
+    }
+  }, [currentUser, navigate]);
+
+  // Función para manejar el logout
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setShowIntro(true);
+    setActiveSection('inicio');
+    navigate('/');
+  };
+
+  // Si no hay usuario autorizado, no renderizar
+  if (!currentUser || (currentUser.rol !== 'client' && currentUser.rol !== 'cliente')) {
+    return null;
+  }
+
+  return (
+    <ClientDashboard
+      darkMode={darkMode}
       language={language}
       onLogout={handleLogout}
       currentUser={currentUser}
@@ -299,14 +301,11 @@ const App = () => {
         <Routes>
           {/* Ruta principal */}
           <Route path="/" element={<MainPage />} />
-          
           {/* Ruta del login */}
           <Route path="/login" element={<LoginPageWrapper />} />
-          
           {/* Ruta del admin */}
           <Route path="/admin" element={<AdminDashboardWrapper />} />
-          
-          {/* NUEVA: Ruta del cliente */}
+          {/* Ruta del cliente */}
           <Route path="/client-dashboard" element={<ClientDashboardWrapper />} />
         </Routes>
       </AppProvider>

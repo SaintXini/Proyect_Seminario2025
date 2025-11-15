@@ -1,19 +1,16 @@
 // LoginPage.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
 import { User, Shield, Mail, Lock, ArrowLeft, Eye, EyeOff, Phone, Building, Home } from 'lucide-react';
+import * as api from '../../services/api';
 
-
-const API_URL = ' http://127.0.0.1:5000/api'; // Reemplaza por tu URL real
-
-const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
-  const navigate = useNavigate(); 
+const LoginPage = ({ darkMode, language, onBackClick, onLogin }) => {
+  const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState('client');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -31,6 +28,7 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
       createAccount: 'Crear Cuenta',
       login: 'Iniciar Sesión',
       adminAccess: 'Acceso al panel de administración',
+      clientAccess: 'Acceso al panel de cliente',
       completeData: 'Completa tus datos para registrarte',
       enterCredentials: 'Ingresa tus credenciales',
       fullName: 'Nombre completo',
@@ -46,12 +44,14 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
       loginButton: 'Inicia sesión',
       registerButton: 'Regístrate',
       adminAccessLink: 'Acceso para administradores',
+      clientAccessLink: 'Acceso para clientes',
       backToHome: 'Volver al inicio',
       back: 'Volver',
       passwordMismatch: 'Las contraseñas no coinciden',
       registerSuccess: 'Registro exitoso como',
-      loginSuccess: 'Iniciando sesión como',
-      completeFields: 'Por favor completa todos los campos requeridos'
+      loginSuccess: 'Bienvenido',
+      completeFields: 'Por favor completa todos los campos requeridos',
+      loading: 'Cargando...'
     },
     en: {
       admin: 'Administrator',
@@ -59,6 +59,7 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
       createAccount: 'Create Account',
       login: 'Log In',
       adminAccess: 'Access to admin panel',
+      clientAccess: 'Access to client panel',
       completeData: 'Complete your information to register',
       enterCredentials: 'Enter your credentials',
       fullName: 'Full name',
@@ -74,88 +75,107 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin, t }) => {
       loginButton: 'Log in',
       registerButton: 'Sign up',
       adminAccessLink: 'Administrator access',
+      clientAccessLink: 'Client access',
       backToHome: 'Back to home',
       back: 'Back',
       passwordMismatch: 'Passwords do not match',
       registerSuccess: 'Successfully registered as',
-      loginSuccess: 'Logging in as',
-      completeFields: 'Please complete all required fields'
+      loginSuccess: 'Welcome',
+      completeFields: 'Please complete all required fields',
+      loading: 'Loading...'
     }
   };
 
   const currentT = translations[language] || translations.es;
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  // Validaciones básicas
-  if (!formData.email || !formData.password) {
-    alert(currentT.completeFields);
-    return;
-  }
-
-  try {
-    if (isRegistering) {
-      // Registro
-      const response = await axios.post(`${API_URL}/register`, {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        telefono: formData.phone,
-        company: formData.company,
-        rol: selectedRole
-      });
-
-      alert(`${currentT.registerSuccess} ${selectedRole === 'admin' ? currentT.admin : currentT.client}`);
-      setIsRegistering(false);
-      resetForm();
-
-      //Redirigir después del registro
-      if (selectedRole === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/client-dashboard');
-      }
-
-    } else {
-      // Login
-      const response = await axios.post(`${API_URL}/login`, {
-        email: formData.email,
-        password: formData.password
-      });
-
-      alert(`${currentT.loginSuccess} ${selectedRole}`);
-
-      //Redirigir después del login
-      if (selectedRole === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/admin');
-      }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validaciones básicas
+    if (!formData.email || !formData.password) {
+      alert(currentT.completeFields);
+      return;
     }
-  } catch (error) {
-    console.error('Error en login/registro:', error);
-    alert('Ocurrió un error. Verifica tus datos.');
-  }
-};
-const handleInputChange = (e) => {
-  setFormData({
-    ...formData,
-    [e.target.name]: e.target.value
-  });
-};
 
-const resetForm = () => {
-  setFormData({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
-    phone: '',
-    company: ''
-  });
-  setIsRegistering(false);
-};
+    // Validación de contraseñas al registrar
+    if (isRegistering && formData.password !== formData.confirmPassword) {
+      alert(currentT.passwordMismatch);
+      return;
+    }
+
+    // Validación de campos requeridos para registro de cliente
+    if (isRegistering && selectedRole === 'client' && !formData.name) {
+      alert(currentT.completeFields);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (isRegistering) {
+        // Registro
+        const response = await api.register({
+          name: formData.name || formData.email.split('@')[0],
+          email: formData.email,
+          password: formData.password,
+          telefono: formData.telefono,
+          company: formData.company,
+          rol: selectedRole
+        });
+
+        alert(`${currentT.registerSuccess} ${selectedRole === 'admin' ? currentT.admin : currentT.client}`);
+        
+        // Limpiar formulario y cambiar a modo login
+        resetForm();
+        setIsRegistering(false);
+      } else {
+        // Login
+        const response = await api.login({
+          email: formData.email,
+          password: formData.password
+        });
+
+        console.log('Respuesta del login:', response);
+        
+        // Llamar a la función onLogin si existe (esto manejará la navegación)
+        if (onLogin) {
+          onLogin(response.user);
+        } else {
+          // Fallback: redirigir manualmente si onLogin no existe
+          alert(`${currentT.loginSuccess}, ${response.user.name}!`);
+          if (response.user.rol === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate('/client-dashboard');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error en login/registro:', error);
+      const errorMessage = error.error || error.message || 'Ocurrió un error. Verifica tus datos.';
+      alert(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const resetForm = () => {
+    setFormData({
+      email: '',
+      password: '',
+      confirmPassword: '',
+      name: '',
+      telefono: '',
+      company: ''
+    });
+  };
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${
@@ -193,6 +213,7 @@ const resetForm = () => {
             ? 'bg-white/10 border-white/10'
             : 'bg-white/60 border-white/30'
         } backdrop-blur-2xl rounded-3xl shadow-2xl border p-8`}>
+          
           {/* Header con logo y botón de volver */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex justify-center">
@@ -221,6 +242,7 @@ const resetForm = () => {
               <button
                 onClick={() => {
                   setSelectedRole('client');
+                  setIsRegistering(false);
                   resetForm();
                 }}
                 className={`flex items-center text-sm transition-all duration-300 hover:scale-105 ${
@@ -257,7 +279,7 @@ const resetForm = () => {
             <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
               {selectedRole === 'admin'
                 ? currentT.adminAccess
-                : (isRegistering ? currentT.completeData : currentT.enterCredentials)
+                : (isRegistering ? currentT.completeData : currentT.clientAccess)
               }
             </p>
           </div>
@@ -282,6 +304,7 @@ const resetForm = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Juan Pérez"
+                    required={isRegistering && selectedRole === 'client'}
                     className={`w-full pl-12 pr-4 py-3 rounded-2xl transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/10 text-white placeholder-gray-500 focus:bg-white/10 focus:border-cyan-500'
@@ -337,8 +360,8 @@ const resetForm = () => {
                   }`} />
                   <input
                     type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    name="telefono"
+                    value={formData.telefono}
                     onChange={handleInputChange}
                     placeholder="+502 1234-5678"
                     className={`w-full pl-12 pr-4 py-3 rounded-2xl transition-all duration-300 ${
@@ -439,6 +462,7 @@ const resetForm = () => {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     placeholder="••••••••"
+                    required={isRegistering && selectedRole === 'client'}
                     className={`w-full pl-12 pr-12 py-3 rounded-2xl transition-all duration-300 ${
                       darkMode
                         ? 'bg-white/5 border-white/10 text-white placeholder-gray-500 focus:bg-white/10 focus:border-cyan-500'
@@ -494,37 +518,32 @@ const resetForm = () => {
             {/* Botón de submit */}
             <button
               type="submit"
+              disabled={isLoading}
               className={`w-full py-4 rounded-2xl font-bold text-white transition-all duration-300 hover:scale-105 transform relative overflow-hidden group ${
                 selectedRole === 'admin'
                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 shadow-lg shadow-blue-500/50'
                   : 'bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-500 hover:to-rose-500 shadow-lg shadow-rose-500/50'
-              }`}
+              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <span className="relative z-10">
-                {isRegistering ? currentT.createAccount : currentT.login}
+                {isLoading ? currentT.loading : (isRegistering ? currentT.createAccount : currentT.login)}
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
           </form>
 
-          {/* Links adicionales (solo para clientes) */}
-          {selectedRole === 'client' && (
-            <>
-              <div className="mt-6 text-center">
+          {/* Links adicionales */}
+          <div className="mt-6 space-y-4">
+            {/* Toggle entre login y registro (solo para clientes) */}
+            {selectedRole === 'client' && (
+              <div className="text-center">
                 <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   {isRegistering ? currentT.haveAccount : currentT.noAccount}{' '}
                   <button
                     type="button"
                     onClick={() => {
                       setIsRegistering(!isRegistering);
-                      setFormData({
-                        email: '',
-                        password: '',
-                        confirmPassword: '',
-                        name: '',
-                        telefono: '',
-                        company: ''
-                      });
+                      resetForm();
                     }}
                     className={`font-semibold transition-colors duration-200 ${
                       darkMode
@@ -536,10 +555,14 @@ const resetForm = () => {
                   </button>
                 </p>
               </div>
+            )}
 
-              <div className={`mt-6 pt-6 border-t text-center ${
-                darkMode ? 'border-white/10' : 'border-gray-300'
-              }`}>
+            {/* Separador */}
+            <div className={`pt-4 border-t text-center ${
+              darkMode ? 'border-white/10' : 'border-gray-300'
+            }`}>
+              {/* Cambiar entre cliente y admin */}
+              {selectedRole === 'client' ? (
                 <button
                   type="button"
                   onClick={() => {
@@ -556,9 +579,26 @@ const resetForm = () => {
                   <Shield className="w-4 h-4 mr-2" />
                   {currentT.adminAccessLink}
                 </button>
-              </div>
-            </>
-          )}
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedRole('client');
+                    setIsRegistering(false);
+                    resetForm();
+                  }}
+                  className={`inline-flex items-center text-sm font-medium transition-colors duration-200 ${
+                    darkMode
+                      ? 'text-gray-400 hover:text-rose-400'
+                      : 'text-gray-600 hover:text-rose-600'
+                  }`}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  {currentT.clientAccessLink}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -3,25 +3,23 @@ import React from 'react';
 import { Plus, Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getDaysInMonth, getEventColor, getMonthNames, getDayNames } from './helpers';
 
-export const CalendarView = ({ 
-  darkMode, 
+export const CalendarView = ({
+  darkMode,
   t,
   currentMonth,
   setCurrentMonth,
   activeCalendar,
   setActiveCalendar,
   clientEvents,
-  setClientEvents,
   companyEvents,
-  setCompanyEvents,
   setShowModal,
   setModalType,
   setEditingItem,
-  setFormData
+  setFormData,
+  onDeleteCalendarEvent
 }) => {
   const currentEvents = activeCalendar === 'clients' ? clientEvents : companyEvents;
   const eventType = activeCalendar === 'clients' ? 'clientEvent' : 'companyEvent';
-  const setCurrentEvents = activeCalendar === 'clients' ? setClientEvents : setCompanyEvents;
 
   const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentMonth);
   const monthNames = getMonthNames(t);
@@ -32,12 +30,6 @@ export const CalendarView = ({
     setEditingItem(event);
     setFormData(event || {});
     setShowModal(true);
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm(t.confirmDelete)) {
-      setCurrentEvents(currentEvents.filter(e => e.id !== id));
-    }
   };
 
   const getEventsForDay = (day) => {
@@ -74,8 +66,8 @@ export const CalendarView = ({
             activeCalendar === 'clients'
               ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
               : darkMode
-                ? 'bg-white/5 text-gray-400 hover:bg-white/10'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-white/5 text-gray-400 hover:bg-white/10'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
           {t.clientCalendar}
@@ -86,8 +78,8 @@ export const CalendarView = ({
             activeCalendar === 'company'
               ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-white'
               : darkMode
-                ? 'bg-white/5 text-gray-400 hover:bg-white/10'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-white/5 text-gray-400 hover:bg-white/10'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
           {t.companyCalendar}
@@ -103,8 +95,8 @@ export const CalendarView = ({
             <button
               onClick={() => changeMonth(-1)}
               className={`p-2 rounded-xl transition-all ${
-                darkMode 
-                  ? 'bg-white/5 hover:bg-white/10 text-white' 
+                darkMode
+                  ? 'bg-white/5 hover:bg-white/10 text-white'
                   : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
               }`}
             >
@@ -113,8 +105,8 @@ export const CalendarView = ({
             <button
               onClick={() => changeMonth(1)}
               className={`p-2 rounded-xl transition-all ${
-                darkMode 
-                  ? 'bg-white/5 hover:bg-white/10 text-white' 
+                darkMode
+                  ? 'bg-white/5 hover:bg-white/10 text-white'
                   : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
               }`}
             >
@@ -140,8 +132,8 @@ export const CalendarView = ({
           {Array.from({ length: daysInMonth }).map((_, index) => {
             const day = index + 1;
             const dayEvents = getEventsForDay(day);
-            const isToday = 
-              day === new Date().getDate() && 
+            const isToday =
+              day === new Date().getDate() &&
               currentMonth.getMonth() === new Date().getMonth() &&
               currentMonth.getFullYear() === new Date().getFullYear();
 
@@ -154,8 +146,8 @@ export const CalendarView = ({
                       ? 'border-cyan-500 bg-cyan-500/10'
                       : 'border-blue-500 bg-blue-50'
                     : darkMode
-                      ? 'border-white/10 bg-white/5 hover:bg-white/10'
-                      : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                    ? 'border-white/10 bg-white/5 hover:bg-white/10'
+                    : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
                 }`}
               >
                 <div className={`text-sm font-semibold mb-1 ${
@@ -165,12 +157,12 @@ export const CalendarView = ({
                 </div>
                 <div className="space-y-1">
                   {dayEvents.map((event) => (
-                    <div 
+                    <div
                       key={event.id}
                       className={`text-xs p-1 rounded border-l-2 ${getEventColor(event.type, darkMode)} cursor-pointer group relative`}
                     >
                       <div className="font-medium truncate">{event.title}</div>
-                      <div className="absolute hidden group-hover:flex gap-1 top-0 right-0">
+                      <div className="absolute hidden group-hover:flex gap-1 top-0 right-0 z-10">
                         <button
                           onClick={() => openModal(event)}
                           className="p-1 bg-blue-500 rounded text-white"
@@ -178,7 +170,7 @@ export const CalendarView = ({
                           <Edit className="w-3 h-3" />
                         </button>
                         <button
-                          onClick={() => handleDelete(event.id)}
+                          onClick={() => onDeleteCalendarEvent(event.id)}
                           className="p-1 bg-red-500 rounded text-white"
                         >
                           <Trash2 className="w-3 h-3" />
