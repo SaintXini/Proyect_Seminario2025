@@ -59,8 +59,8 @@
 
 ```bash
 # Clonar el repositorio / Clone the repository
-git clone https://github.com/SaintXini/<nombre-del-repo>
-cd <nombre-del-repo>
+git clone https://github.com/SaintXini/Proyect_Seminario2025>
+cd Proyect_Seminario
 
 # Backend
 pip install -r requirements.txt
