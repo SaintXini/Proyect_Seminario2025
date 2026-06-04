@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Shield, Mail, Lock, ArrowLeft, Eye, EyeOff, Phone, Building, Home } from 'lucide-react';
-import * as api from '../../services/api';
+// import * as api from '../../services/api'; // ⚠️ Desactivado temporalmente para pruebas
 
 const LoginPage = ({ darkMode, language, onBackClick, onLogin }) => {
   const navigate = useNavigate();
@@ -88,9 +88,35 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin }) => {
 
   const currentT = translations[language] || translations.es;
 
+  // ─────────────────────────────────────────────────────────────
+  // 🚧 MOCK AUTH — acceso libre con cualquier dato para pruebas
+  //    Reemplazar por llamadas reales a `api` cuando el backend esté listo
+  // ─────────────────────────────────────────────────────────────
+  const mockAuth = async (isRegister) => {
+    // Simula un pequeño delay de red
+    await new Promise((res) => setTimeout(res, 600));
+
+    const displayName =
+      formData.name || formData.email.split('@')[0] || 'Usuario';
+
+    if (isRegister) {
+      return { success: true };
+    }
+
+    return {
+      user: {
+        id: '000',
+        name: displayName,
+        email: formData.email,
+        rol: selectedRole, // 'admin' | 'client'
+      },
+    };
+  };
+  // ─────────────────────────────────────────────────────────────
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validaciones básicas
     if (!formData.email || !formData.password) {
       alert(currentT.completeFields);
@@ -113,35 +139,28 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin }) => {
 
     try {
       if (isRegistering) {
-        // Registro
-        const response = await api.register({
-          name: formData.name || formData.email.split('@')[0],
-          email: formData.email,
-          password: formData.password,
-          telefono: formData.telefono,
-          company: formData.company,
-          rol: selectedRole
-        });
+        // ── REGISTRO (mock) ──────────────────────────────────
+        await mockAuth(true);
+        // await api.register({ ... }); // ← descomentar para producción
 
-        alert(`${currentT.registerSuccess} ${selectedRole === 'admin' ? currentT.admin : currentT.client}`);
-        
-        // Limpiar formulario y cambiar a modo login
+        alert(
+          `${currentT.registerSuccess} ${
+            selectedRole === 'admin' ? currentT.admin : currentT.client
+          }`
+        );
         resetForm();
         setIsRegistering(false);
       } else {
-        // Login
-        const response = await api.login({
-          email: formData.email,
-          password: formData.password
-        });
+        // ── LOGIN (mock) ─────────────────────────────────────
+        const response = await mockAuth(false);
+        // const response = await api.login({ email: formData.email, password: formData.password });
+        // ─────────────────────────────────────────────────────
 
         console.log('Respuesta del login:', response);
-        
-        // Llamar a la función onLogin si existe (esto manejará la navegación)
+
         if (onLogin) {
           onLogin(response.user);
         } else {
-          // Fallback: redirigir manualmente si onLogin no existe
           alert(`${currentT.loginSuccess}, ${response.user.name}!`);
           if (response.user.rol === 'admin') {
             navigate('/admin');
@@ -152,7 +171,8 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin }) => {
       }
     } catch (error) {
       console.error('Error en login/registro:', error);
-      const errorMessage = error.error || error.message || 'Ocurrió un error. Verifica tus datos.';
+      const errorMessage =
+        error.error || error.message || 'Ocurrió un error. Verifica tus datos.';
       alert(errorMessage);
     } finally {
       setIsLoading(false);
