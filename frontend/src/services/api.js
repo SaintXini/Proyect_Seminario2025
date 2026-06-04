@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'https://proyecto-seminario2025-mbb3.onrender.com/api';
+// Usar localhost en desarrollo, URL de producción en producción
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 // Configuración de axios
 const api = axios.create({
@@ -10,10 +11,95 @@ const api = axios.create({
   },
 });
 
-// Interceptor para manejar errores globalmente
+// Flag para evitar ciclos infinitos de refresh
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+// Interceptor para agregar token JWT a las solicitudes
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Interceptor para manejar errores globalmente y renovar token si es necesario
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+    
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers['Authorization'] = 'Bearer ' + token;
+          return api(originalRequest);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+      
+      const refreshToken = localStorage.getItem('refresh_token');
+      
+      if (!refreshToken) {
+        // No hay refresh token, limpiar y redirigir a login
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
+        window.location.href = '/login';
+        return Promise.reject(error);
+      }
+
+      try {
+        const response = await axios.post(`${API_URL}/auth/refresh`, {}, {
+          headers: {
+            'Authorization': `Bearer ${refreshToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const { access_token } = response.data;
+        localStorage.setItem('access_token', access_token);
+        
+        api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+        originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
+        
+        processQueue(null, access_token);
+        return api(originalRequest);
+      } catch (err) {
+        processQueue(err, null);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
+        window.location.href = '/login';
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+    
     console.error('API Error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
@@ -22,7 +108,7 @@ api.interceptors.response.use(
 // ==================== AUTENTICACIÓN ====================
 export const register = async (userData) => {
   try {
-    const response = await api.post('/register', userData);
+    const response = await api.post('/auth/register', userData);
     return response.data;
   } catch (error) {
     throw error.response?.data || error;
@@ -31,8 +117,11 @@ export const register = async (userData) => {
 
 export const login = async (credentials) => {
   try {
-    const response = await api.post('/login', credentials);
-    if (response.data.user) {
+    const response = await api.post('/auth/login', credentials);
+    if (response.data.access_token) {
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       sessionStorage.setItem('user', JSON.stringify(response.data.user));
     }
     return response.data;
@@ -42,12 +131,40 @@ export const login = async (credentials) => {
 };
 
 export const logout = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  localStorage.removeItem('user');
   sessionStorage.removeItem('user');
 };
 
 export const getCurrentUser = () => {
-  const userStr = sessionStorage.getItem('user');
+  const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
   return userStr ? JSON.parse(userStr) : null;
+};
+
+export const refreshToken = async () => {
+  try {
+    const response = await api.post('/auth/refresh');
+    if (response.data.access_token) {
+      localStorage.setItem('access_token', response.data.access_token);
+    }
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const updateProfile = async (profileData) => {
+  try {
+    const response = await api.put('/auth/profile', profileData);
+    if (response.data.user) {
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      sessionStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
 };
 
 // ==================== PROYECTOS ====================

@@ -1,5 +1,5 @@
 // AdminDashboard.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { translations } from './admin/data/translations';
 import * as api from '../services/api';
 
@@ -42,32 +42,22 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
   // Traducciones
   const t = translations[language] || translations.es;
 
-  // Cargar datos del backend al montar el componente
-  useEffect(() => {
-    loadAllData();
-  }, []);
-
-  // Cargar eventos del calendario cuando cambie el mes o el tipo
-  useEffect(() => {
-    loadCalendarEvents();
-  }, [currentMonth, activeCalendar]);
-
-  const loadAllData = async () => {
+  const loadAllData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
     try {
-      const [projectsData, clientsData, inventoryData, investmentsData] = await Promise.all([
+      const [projectsRes, clientsRes, inventoryRes, investmentsRes] = await Promise.all([
         api.getProjects(),
         api.getClients(),
         api.getInventory(),
         api.getInvestments()
       ]);
       
-      setProjects(projectsData);
-      setClients(clientsData);
-      setInventoryItems(inventoryData);
-      setInvestments(investmentsData);
+      setProjects(projectsRes.projects || projectsRes);
+      setClients(clientsRes.clients || clientsRes);
+      setInventoryItems(inventoryRes.items || inventoryRes);
+      setInvestments(investmentsRes.investments || investmentsRes);
       
       console.log('✅ Datos cargados correctamente');
     } catch (error) {
@@ -76,9 +66,14 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const loadCalendarEvents = async () => {
+  // Cargar datos del backend al montar el componente
+  useEffect(() => {
+    loadAllData();
+  }, [loadAllData]);
+
+  const loadCalendarEvents = useCallback(async () => {
     try {
       const month = currentMonth.getMonth() + 1; // JavaScript usa 0-11
       const year = currentMonth.getFullYear();
@@ -93,7 +88,12 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
     } catch (error) {
       console.error('Error cargando eventos del calendario:', error);
     }
-  };
+  }, [currentMonth, activeCalendar]);
+
+  // Cargar eventos del calendario cuando cambie el mes o el tipo
+  useEffect(() => {
+    loadCalendarEvents();
+  }, [loadCalendarEvents]);
 
   // Funciones del modal
   const closeModal = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './cliente/Header';
 import Sidebar from './cliente/Sidebar';
 import Modal from './cliente/Modal';
@@ -11,7 +11,7 @@ import ProfileSection from './cliente/ProfileSection';
 import { NewProjectModal, EditProjectModal, NewRequestModal } from './cliente/ModalContent';
 import { dashboardTranslations } from './cliente/data/translations';
 import { getMenuItems } from './cliente/data/constants';
-import { initialActiveProjects, initialProjectHistory } from './cliente/data/mockData';
+import * as api from '../services/api';
 
 const ClientDashboard = ({ darkMode, language, onLogout }) => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -20,8 +20,27 @@ const ClientDashboard = ({ darkMode, language, onLogout }) => {
   const [modalType, setModalType] = useState('');
   const [selectedProject, setSelectedProject] = useState(null);
   
-  const [activeProjectsList, setActiveProjectsList] = useState(initialActiveProjects);
-  const [projectHistory, setProjectHistory] = useState(initialProjectHistory);
+  const [activeProjectsList, setActiveProjectsList] = useState([]);
+  const [projectHistory, setProjectHistory] = useState([]);
+
+  const loadClientData = useCallback(async () => {
+    try {
+      // Cargar proyectos del backend
+      const projectsResponse = await api.getProjects();
+      const projects = projectsResponse.projects || projectsResponse;
+      setActiveProjectsList(projects.filter(p => p.status !== 'Completado'));
+      setProjectHistory(projects.filter(p => p.status === 'Completado'));
+    } catch (error) {
+      console.error('Error cargando datos del cliente:', error);
+      setActiveProjectsList([]);
+      setProjectHistory([]);
+    }
+  }, []);
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    loadClientData();
+  }, [loadClientData]);
   
   const [newProjectForm, setNewProjectForm] = useState({
     name: '',
@@ -41,46 +60,84 @@ const ClientDashboard = ({ darkMode, language, onLogout }) => {
   const menuItems = getMenuItems(t);
 
   // Handler para enviar nuevo proyecto
-  const handleSubmitProject = () => {
-    if (!newProjectForm.name || !newProjectForm.deliveryDate) {
+  const handleSubmitProject = async () => {
+    if (!newProjectForm.name) {
       alert(language === 'es' ? 'Por favor completa todos los campos' : 'Please complete all fields');
       return;
     }
-    const newProject = {
-      id: Date.now(),
-      name: newProjectForm.name,
-      status: 'pending',
-      progress: 0,
-    };
-    setActiveProjectsList([...activeProjectsList, newProject]);
-    alert(`${language === 'es' ? 'Proyecto enviado exitosamente' : 'Project submitted successfully'}. #${Math.floor(Math.random() * 10000)}`);
-    setNewProjectForm({ name: '', type: 'institutional', description: '', deliveryDate: '' });
-    setShowModal(false);
+    try {
+      const projectData = {
+        name: newProjectForm.name,
+        client: 'Cliente',
+        description: newProjectForm.description,
+        status: 'En progreso',
+        progress: 0,
+        budget: 0,
+        start_date: new Date().toISOString(),
+        end_date: newProjectForm.deliveryDate ? new Date(newProjectForm.deliveryDate).toISOString() : null
+      };
+      
+      const response = await api.createProject(projectData);
+      setActiveProjectsList([...activeProjectsList, response.project || response]);
+      alert(language === 'es' ? 'Proyecto creado exitosamente' : 'Project created successfully');
+      setNewProjectForm({ name: '', type: 'institutional', description: '', deliveryDate: '' });
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error creando proyecto:', error);
+      alert(language === 'es' ? 'Error al crear el proyecto' : 'Error creating project');
+    }
   };
 
   // Handler para actualizar proyecto existente
-  const handleUpdateProject = () => {
-    const updatedProjects = activeProjectsList.map(p => 
-      p.id === selectedProject.id 
-        ? { ...p, name: newProjectForm.name }
-        : p
-    );
-    setActiveProjectsList(updatedProjects);
-    alert(language === 'es' ? 'Proyecto actualizado exitosamente' : 'Project updated successfully');
-    setShowModal(false);
-    setSelectedProject(null);
-    setNewProjectForm({ name: '', type: 'institutional', description: '', deliveryDate: '' });
+  const handleUpdateProject = async () => {
+    if (!newProjectForm.name) {
+      alert(language === 'es' ? 'Por favor completa todos los campos' : 'Please complete all fields');
+      return;
+    }
+    try {
+      const projectData = {
+        name: newProjectForm.name,
+        description: newProjectForm.description,
+        end_date: newProjectForm.deliveryDate ? new Date(newProjectForm.deliveryDate).toISOString() : null
+      };
+      
+      const response = await api.updateProject(selectedProject.id, projectData);
+      const updatedProjects = activeProjectsList.map(p =>
+        p.id === selectedProject.id ? (response.project || response) : p
+      );
+      setActiveProjectsList(updatedProjects);
+      alert(language === 'es' ? 'Proyecto actualizado exitosamente' : 'Project updated successfully');
+      setShowModal(false);
+      setSelectedProject(null);
+      setNewProjectForm({ name: '', type: 'institutional', description: '', deliveryDate: '' });
+    } catch (error) {
+      console.error('Error actualizando proyecto:', error);
+      alert(language === 'es' ? 'Error al actualizar el proyecto' : 'Error updating project');
+    }
   };
 
   // Handler para enviar solicitud
-  const handleSubmitRequest = () => {
+  const handleSubmitRequest = async () => {
     if (!requestForm.details) {
       alert(language === 'es' ? 'Por favor describe tu solicitud' : 'Please describe your request');
       return;
     }
-    alert(`${language === 'es' ? 'Solicitud enviada exitosamente' : 'Request submitted successfully'}. #${Math.floor(Math.random() * 10000)}`);
-    setRequestForm({ type: '', projectId: '', details: '', urgency: 'medium' });
-    setShowModal(false);
+    try {
+      const investmentData = {
+        item: requestForm.type || 'Solicitud',
+        notes: requestForm.details,
+        priority: requestForm.urgency === 'high' ? 'Alta' : requestForm.urgency === 'low' ? 'Baja' : 'Media',
+        status: 'Pendiente'
+      };
+      
+      await api.createInvestment(investmentData);
+      alert(language === 'es' ? 'Solicitud enviada exitosamente' : 'Request submitted successfully');
+      setRequestForm({ type: '', projectId: '', details: '', urgency: 'medium' });
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error enviando solicitud:', error);
+      alert(language === 'es' ? 'Error al enviar la solicitud' : 'Error submitting request');
+    }
   };
 
   const renderSection = () => {
