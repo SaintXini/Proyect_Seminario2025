@@ -1,6 +1,6 @@
 // src/components/admin/Sidebar.jsx
 import React from 'react';
-import { Calendar, DollarSign, Package, TrendingUp, Users, Video, LogOut } from 'lucide-react';
+import { Calendar, DollarSign, Package, TrendingUp, Users, Video, LogOut, Lightbulb } from 'lucide-react';
 
 export const Sidebar = ({ activeTab, setActiveTab, onLogout, darkMode, t }) => {
   const menuItems = [
@@ -8,9 +8,9 @@ export const Sidebar = ({ activeTab, setActiveTab, onLogout, darkMode, t }) => {
     { id: 'projects', icon: <Video className="w-5 h-5" />, label: t.projects },
     { id: 'clients', icon: <Users className="w-5 h-5" />, label: t.clients },
     { id: 'calendar', icon: <Calendar className="w-5 h-5" />, label: t.calendar },
+    { id: 'financial', icon: <DollarSign className="w-5 h-5" />, label: 'Finanzas' },
+    { id: 'recommendations', icon: <Lightbulb className="w-5 h-5" />, label: 'Recomendaciones' },
     { id: 'inventory', icon: <Package className="w-5 h-5" />, label: t.inventory },
-    // Cambiado: antes era solo el ícono del dólar, ahora dice “Finanzas y Recomendaciones”
-    { id: 'finanzasDashboard', icon: <DollarSign className="w-5 h-5" />, label: 'Finanzas y Recomendaciones' },
   ];
 
   return (

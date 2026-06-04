@@ -12,6 +12,7 @@ import { ClientsView } from './admin/ClientsView';
 import { CalendarView } from './admin/CalendarView';
 import { FinancialView } from './admin/FinancialView';
 import { InventoryView } from './admin/InventoryView';
+import { RecommendationsView } from './admin/RecommendationsView';
 
 export const AdminDashboard = ({ darkMode, language, onLogout }) => {
   // Estados de navegación
@@ -34,6 +35,10 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
   const [inventoryItems, setInventoryItems] = useState([]);
   const [investments, setInvestments] = useState([]);
   const [clients, setClients] = useState([]);
+  const [finances, setFinances] = useState([]);
+  const [financeSummary, setFinanceSummary] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
+  const [meetings, setMeetings] = useState([]);
   
   // Estados de carga
   const [isLoading, setIsLoading] = useState(true);
@@ -47,19 +52,27 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
     setError(null);
     
     try {
-      const [projectsRes, clientsRes, inventoryRes, investmentsRes] = await Promise.all([
+      const [projectsRes, clientsRes, inventoryRes, investmentsRes, financeRes, financesSummaryRes, recommendationsRes, meetingsRes] = await Promise.all([
         api.getProjects(),
         api.getClients(),
         api.getInventory(),
-        api.getInvestments()
+        api.getInvestments(),
+        api.getFinance(),
+        api.getFinanceSummary(),
+        api.getActiveRecommendations(),
+        api.getMeetings()
       ]);
       
       setProjects(projectsRes.projects || projectsRes);
       setClients(clientsRes.clients || clientsRes);
       setInventoryItems(inventoryRes.items || inventoryRes);
       setInvestments(investmentsRes.investments || investmentsRes);
+      setFinances(Array.isArray(financeRes) ? financeRes : financeRes.finances || []);
+      setFinanceSummary(financesSummaryRes);
+      setRecommendations(Array.isArray(recommendationsRes) ? recommendationsRes : recommendationsRes.recommendations || []);
+      setMeetings(Array.isArray(meetingsRes) ? meetingsRes : meetingsRes.meetings || []);
       
-      console.log('✅ Datos cargados correctamente');
+      console.log('✅ Todos los datos cargados correctamente');
     } catch (error) {
       console.error('❌ Error cargando datos:', error);
       setError('Error al cargar los datos. Por favor, recarga la página.');
@@ -245,6 +258,32 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
     }
   };
 
+  const handleDeleteRecommendation = async (id) => {
+    if (window.confirm(t.confirmDelete)) {
+      try {
+        await api.deleteRecommendation(id);
+        setRecommendations(recommendations.filter(r => r.id !== id));
+        console.log('✅ Recomendación eliminada');
+      } catch (error) {
+        console.error('❌ Error eliminando recomendación:', error);
+        alert('Error al eliminar la recomendación');
+      }
+    }
+  };
+
+  const handleDeleteFinance = async (id) => {
+    if (window.confirm(t.confirmDelete)) {
+      try {
+        await api.deleteFinance(id);
+        setFinances(finances.filter(f => f.id !== id));
+        console.log('✅ Registro financiero eliminado');
+      } catch (error) {
+        console.error('❌ Error eliminando registro:', error);
+        alert('Error al eliminar el registro financiero');
+      }
+    }
+  };
+
   // Props compartidos para todas las vistas
   const sharedProps = {
     darkMode,
@@ -261,6 +300,14 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
     setClientEvents,
     companyEvents,
     setCompanyEvents,
+    finances,
+    setFinances,
+    financeSummary,
+    setFinanceSummary,
+    recommendations,
+    setRecommendations,
+    meetings,
+    setMeetings,
     setShowModal,
     setModalType,
     setEditingItem,
@@ -269,7 +316,9 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
     onDeleteClient: handleDeleteClient,
     onDeleteInventory: handleDeleteInventory,
     onDeleteInvestment: handleDeleteInvestment,
-    onDeleteCalendarEvent: handleDeleteCalendarEvent
+    onDeleteCalendarEvent: handleDeleteCalendarEvent,
+    onDeleteRecommendation: handleDeleteRecommendation,
+    onDeleteFinance: handleDeleteFinance
   };
 
   // Mostrar indicador de carga
@@ -345,6 +394,7 @@ export const AdminDashboard = ({ darkMode, language, onLogout }) => {
             />
           )}
           {activeTab === 'financial' && <FinancialView {...sharedProps} />}
+          {activeTab === 'recommendations' && <RecommendationsView {...sharedProps} />}
           {activeTab === 'inventory' && <InventoryView {...sharedProps} />}
         </div>
       </div>
