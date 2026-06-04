@@ -421,6 +421,144 @@ export const deleteCalendarEvent = async (id) => {
   }
 };
 
+// ==================== FINANZAS ====================
+export const getFinance = async () => {
+  try {
+    const response = await api.get('/finance');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const getFinanceSummary = async () => {
+  try {
+    const response = await api.get('/finance/summary');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const createFinance = async (financeData) => {
+  try {
+    const response = await api.post('/finance', financeData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const updateFinance = async (id, financeData) => {
+  try {
+    const response = await api.put(`/finance/${id}`, financeData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const deleteFinance = async (id) => {
+  try {
+    const response = await api.delete(`/finance/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+// ==================== REUNIONES ====================
+export const getMeetings = async () => {
+  try {
+    const response = await api.get('/meetings');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const getMeetingsByUser = async (userId) => {
+  try {
+    const response = await api.get(`/meetings/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const createMeeting = async (meetingData) => {
+  try {
+    const response = await api.post('/meetings', meetingData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const updateMeeting = async (id, meetingData) => {
+  try {
+    const response = await api.put(`/meetings/${id}`, meetingData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const deleteMeeting = async (id) => {
+  try {
+    const response = await api.delete(`/meetings/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+// ==================== RECOMENDACIONES ====================
+export const getRecommendations = async () => {
+  try {
+    const response = await api.get('/recommendations');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const getActiveRecommendations = async () => {
+  try {
+    const response = await api.get('/recommendations/active');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const createRecommendation = async (recommendationData) => {
+  try {
+    const response = await api.post('/recommendations', recommendationData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const updateRecommendation = async (id, recommendationData) => {
+  try {
+    const response = await api.put(`/recommendations/${id}`, recommendationData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const deleteRecommendation = async (id) => {
+  try {
+    const response = await api.delete(`/recommendations/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
 // ==================== HEALTH CHECK ====================
 export const healthCheck = async () => {
   try {

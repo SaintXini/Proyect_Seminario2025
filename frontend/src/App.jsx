@@ -16,6 +16,7 @@ import {AdminDashboard} from './components/AdminDashboard';
 import ClientDashboard from './components/ClientDashboard';
 import { translations } from './components/data/translations';
 import { artists } from './components/data/artists';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './styles/animations.css';
 
 // Crear Context para compartir estado entre rutas
@@ -182,7 +183,8 @@ const MainPage = () => {
 // Componente LoginPage Wrapper que usa el context
 const LoginPageWrapper = () => {
   const navigate = useNavigate();
-  const { darkMode, language, setShowIntro, setActiveSection, setCurrentUser } = useAppContext();
+  const { darkMode, language, setShowIntro, setActiveSection } = useAppContext();
+  const { login } = useAuth();
 
   // Función para volver al inicio con IntroScreen
   const handleBackToHome = () => {
@@ -192,22 +194,12 @@ const LoginPageWrapper = () => {
   };
 
   // Función para manejar el login
-  const handleLogin = (user) => {
-    console.log('Usuario autenticado:', user);
-    
-    // Guardar usuario en el contexto
-    setCurrentUser(user);
-
-    // Redirigir según el rol
-    if (user.rol === 'admin') {
-      console.log('Redirigiendo a /admin');
-      navigate('/admin');
-    } else if (user.rol === 'client' || user.rol === 'cliente') {
-      console.log('Redirigiendo a /client-dashboard');
-      navigate('/client-dashboard');
-    } else {
-      console.error('Rol desconocido:', user.rol);
-      alert('Error: Rol de usuario no reconocido');
+  const handleLogin = async (email, password) => {
+    try {
+      await login(email, password);
+      // La redirección se maneja en el componente LoginPage
+    } catch (error) {
+      console.error('Error en login:', error);
     }
   };
 
@@ -224,26 +216,26 @@ const LoginPageWrapper = () => {
 // Componente AdminDashboard Wrapper que usa el context
 const AdminDashboardWrapper = () => {
   const navigate = useNavigate();
-  const { darkMode, language, setShowIntro, setActiveSection, currentUser, setCurrentUser } = useAppContext();
+  const { darkMode, language, setShowIntro, setActiveSection } = useAppContext();
+  const { user, isAdmin, logout } = useAuth();
 
   // Verificar autenticación
   useEffect(() => {
-    if (!currentUser || currentUser.rol !== 'admin') {
-      console.log('Usuario no autorizado para admin, redirigiendo a login');
+    if (!isAdmin) {
       navigate('/login');
     }
-  }, [currentUser, navigate]);
+  }, [isAdmin, navigate]);
 
   // Función para manejar el logout
   const handleLogout = () => {
-    setCurrentUser(null);
+    logout();
     setShowIntro(true);
     setActiveSection('inicio');
     navigate('/');
   };
 
   // Si no hay usuario autorizado, no renderizar
-  if (!currentUser || currentUser.rol !== 'admin') {
+  if (!isAdmin) {
     return null;
   }
 
@@ -259,27 +251,26 @@ const AdminDashboardWrapper = () => {
 // Componente ClientDashboard Wrapper que usa el context
 const ClientDashboardWrapper = () => {
   const navigate = useNavigate();
-  const { darkMode, language, setShowIntro, setActiveSection, currentUser, setCurrentUser } = useAppContext();
+  const { darkMode, language, setShowIntro, setActiveSection } = useAppContext();
+  const { user, isClient, logout } = useAuth();
 
   // Verificar autenticación
   useEffect(() => {
-    console.log('ClientDashboard - Usuario actual:', currentUser);
-    if (!currentUser || (currentUser.rol !== 'client' && currentUser.rol !== 'cliente')) {
-      console.log('Usuario no autorizado para cliente, redirigiendo a login');
+    if (!isClient) {
       navigate('/login');
     }
-  }, [currentUser, navigate]);
+  }, [isClient, navigate]);
 
   // Función para manejar el logout
   const handleLogout = () => {
-    setCurrentUser(null);
+    logout();
     setShowIntro(true);
     setActiveSection('inicio');
     navigate('/');
   };
 
   // Si no hay usuario autorizado, no renderizar
-  if (!currentUser || (currentUser.rol !== 'client' && currentUser.rol !== 'cliente')) {
+  if (!isClient) {
     return null;
   }
 
@@ -288,7 +279,7 @@ const ClientDashboardWrapper = () => {
       darkMode={darkMode}
       language={language}
       onLogout={handleLogout}
-      currentUser={currentUser}
+      currentUser={user}
     />
   );
 };
@@ -297,18 +288,20 @@ const ClientDashboardWrapper = () => {
 const App = () => {
   return (
     <Router>
-      <AppProvider>
-        <Routes>
-          {/* Ruta principal */}
-          <Route path="/" element={<MainPage />} />
-          {/* Ruta del login */}
-          <Route path="/login" element={<LoginPageWrapper />} />
-          {/* Ruta del admin */}
-          <Route path="/admin" element={<AdminDashboardWrapper />} />
-          {/* Ruta del cliente */}
-          <Route path="/client-dashboard" element={<ClientDashboardWrapper />} />
-        </Routes>
-      </AppProvider>
+      <AuthProvider>
+        <AppProvider>
+          <Routes>
+            {/* Ruta principal */}
+            <Route path="/" element={<MainPage />} />
+            {/* Ruta del login */}
+            <Route path="/login" element={<LoginPageWrapper />} />
+            {/* Ruta del admin */}
+            <Route path="/admin" element={<AdminDashboardWrapper />} />
+            {/* Ruta del cliente */}
+            <Route path="/client-dashboard" element={<ClientDashboardWrapper />} />
+          </Routes>
+        </AppProvider>
+      </AuthProvider>
     </Router>
   );
 };
