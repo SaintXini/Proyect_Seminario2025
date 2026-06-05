@@ -5,12 +5,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def get_database_url():
+    """Obtiene el DATABASE_URL y agrega SSL si es Supabase"""
+    db_url = os.getenv('DATABASE_URL', '')
+    if db_url and 'supabase' in db_url and 'sslmode' not in db_url:
+        db_url += '?sslmode=require'
+    return db_url
+
+
 class Config:
     """Configuración base de la aplicación"""
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = get_database_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'connect_args': {'sslmode': 'require'}
+    }
 
     # Secret Key
     SECRET_KEY = os.getenv('SECRET_KEY')
@@ -57,6 +69,7 @@ class TestingConfig(Config):
     """Configuración para testing"""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    SQLALCHEMY_ENGINE_OPTIONS = {}
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=5)
 
 
