@@ -41,7 +41,7 @@ class CalendarService:
                 query = query.filter_by(year=year)
             
             events = query.all()
-            return {'events': [e.to_dict() for e in events]}, 200
+            return [e.to_dict() for e in events], 200
         except Exception as e:
             return {'error': str(e)}, 500
     

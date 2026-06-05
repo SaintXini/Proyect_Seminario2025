@@ -1,5 +1,4 @@
-// src/components/admin/FinancialView.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 
 export const FinancialView = ({
@@ -15,17 +14,19 @@ export const FinancialView = ({
   setFormData,
   onDeleteInvestment
 }) => {
-  const budgetData = {
-    total: 150000,
-    spent: projects.reduce((sum, p) => sum + (p.budget || 0), 0),
-    remaining: 150000 - projects.reduce((sum, p) => sum + (p.budget || 0), 0)
-  };
 
   const openModal = (investment = null) => {
     setModalType('investment');
     setEditingItem(investment);
     setFormData(investment || {});
     setShowModal(true);
+  };
+
+  // Calcular datos del presupuesto desde proyectos
+  const budgetData = {
+    total: 150000,
+    spent: projects.reduce((sum, p) => sum + (p.budget || 0), 0),
+    remaining: 150000 - projects.reduce((sum, p) => sum + (p.budget || 0), 0)
   };
 
   return (
@@ -89,19 +90,19 @@ export const FinancialView = ({
             <div className="flex justify-between">
               <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Ingresos</span>
               <span className={`font-semibold text-green-500`}>
-                Q{(budgetData.total || 0).toLocaleString()}
+                Q{(financeSummary?.total_ingresos || 0).toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
               <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Gastos</span>
               <span className={`font-semibold text-red-500`}>
-                Q{(budgetData.spent || 0).toLocaleString()}
+                Q{(financeSummary?.total_gastos || 0).toLocaleString()}
               </span>
             </div>
             <div className="border-t border-gray-300 pt-3 flex justify-between">
               <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Balance</span>
-              <span className={`font-bold text-lg ${budgetData.remaining >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                Q{(budgetData.remaining || 0).toLocaleString()}
+              <span className={`font-bold text-lg ${(financeSummary?.balance || 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                Q{(financeSummary?.balance || 0).toLocaleString()}
               </span>
             </div>
           </div>

@@ -14,6 +14,9 @@ from app.models.inventory_item import InventoryItem
 from app.models.investment import Investment
 from app.models.calendar_event import CalendarEvent
 from app.models.notification import Notification
+from app.models.recommendation import Recommendation
+from app.models.meeting import Meeting
+from app.models.finance import Finance
 
 
 def seed_database():
@@ -368,6 +371,229 @@ def seed_database():
         
         print(f"✅ {len(calendar_events)} eventos de calendario creados")
         
+        # ==================== RECOMENDACIONES ====================
+        print("\n💡 Creando recomendaciones...")
+        
+        recommendations_data = [
+            {
+                'title': 'Optimizar uso de disco',
+                'description': 'Se recomienda limpiar archivos de proyectos completados para liberar espacio en disco. Actualmente la capacidad está al 85%.',
+                'type': 'mejora',
+                'priority': 'alta',
+                'status': 'activa',
+                'category': 'infraestructura',
+                'related_entity': 'proyecto',
+                'related_id': created_projects[0].id if created_projects else None,
+                'icon': 'zap',
+                'action_required': True
+            },
+            {
+                'title': 'Actualizar software de edición',
+                'description': 'Hay una nueva versión de DaVinci Resolve disponible con mejoras de rendimiento. Se recomienda actualizar cuando sea posible.',
+                'type': 'sugerencia',
+                'priority': 'media',
+                'status': 'activa',
+                'category': 'equipo',
+                'related_entity': 'equipo',
+                'icon': 'lightbulb',
+                'action_required': False
+            },
+            {
+                'title': 'Realizar mantenimiento de cámaras',
+                'description': 'Las cámaras Sony A6700 no han recibido mantenimiento en 60 días. Se recomienda un mantenimiento preventivo antes de siguientes grabaciones.',
+                'type': 'advertencia',
+                'priority': 'media',
+                'status': 'activa',
+                'category': 'equipo',
+                'related_entity': 'inventario',
+                'icon': 'alert-circle',
+                'action_required': True
+            },
+            {
+                'title': 'Aprobar solicitud de inversión',
+                'description': 'La solicitud para el drone DJI Inspire 3 está pendiente de aprobación. Es altamente prioritaria según presupuesto disponible.',
+                'type': 'alerta',
+                'priority': 'alta',
+                'status': 'activa',
+                'category': 'presupuesto',
+                'icon': 'trending-down',
+                'action_required': True
+            },
+            {
+                'title': 'Documentar flujo de trabajo',
+                'description': 'Se recomienda crear documentación del flujo de trabajo actualizado para el equipo.',
+                'type': 'sugerencia',
+                'priority': 'baja',
+                'status': 'completada',
+                'category': 'operación',
+                'icon': 'book',
+                'action_required': False
+            }
+        ]
+        
+        recommendations = []
+        for rec_data in recommendations_data:
+            rec = Recommendation(**rec_data)
+            db.session.add(rec)
+            recommendations.append(rec)
+        db.session.commit()
+        
+        print(f"✅ {len(recommendations)} recomendaciones creadas")
+        
+        # ==================== REUNIONES ====================
+        print("\n📞 Creando reuniones...")
+        
+        meetings_data = [
+            {
+                'title': 'Revisión de proyecto con Acme Corp',
+                'description': 'Revisión del progreso del video de bienvenida',
+                'client_id': client_user.id,
+                'admin_id': admin_user.id,
+                'meeting_date': now + timedelta(days=2, hours=10),
+                'duration_minutes': 60,
+                'status': 'pendiente',
+                'meeting_type': 'reunión',
+                'location': 'Zoom',
+                'notes': 'Preparar demos del video editado'
+            },
+            {
+                'title': 'Seguimiento de cápsulas informativas',
+                'description': 'Seguimiento de la serie de cápsulas para TechStart',
+                'client_id': another_client.id,
+                'admin_id': admin_user.id,
+                'meeting_date': now + timedelta(days=3, hours=14),
+                'duration_minutes': 45,
+                'status': 'confirmada',
+                'meeting_type': 'seguimiento',
+                'location': 'Oficina principal',
+                'notes': 'Discutir cambios solicitados'
+            },
+            {
+                'title': 'Planificación proyecto corporativo',
+                'description': 'Planificación general del proyecto corporativo con Global Solutions',
+                'client_id': client_user.id,
+                'admin_id': admin_user.id,
+                'meeting_date': now + timedelta(days=5, hours=11),
+                'duration_minutes': 90,
+                'status': 'pendiente',
+                'meeting_type': 'reunión',
+                'location': 'Teams',
+                'notes': 'Llevar propuesta de timeline'
+            },
+            {
+                'title': 'Entrega de proyecto Q4',
+                'description': 'Entrega final de cápsulas informativas',
+                'client_id': another_client.id,
+                'admin_id': admin_user.id,
+                'meeting_date': now + timedelta(days=7, hours=15),
+                'duration_minutes': 30,
+                'status': 'cancelada',
+                'meeting_type': 'entrega',
+                'location': 'Por confirmar',
+                'notes': 'Reprogramar para la próxima semana'
+            },
+            {
+                'title': 'Revisión de equipos',
+                'description': 'Revisión del estado de los equipos disponibles',
+                'client_id': client_user.id,
+                'admin_id': admin_user.id,
+                'meeting_date': now + timedelta(days=1, hours=9),
+                'duration_minutes': 30,
+                'status': 'completada',
+                'meeting_type': 'revisión',
+                'location': 'Almacén',
+                'notes': 'Completada el 2024-01-15'
+            }
+        ]
+        
+        meetings = []
+        for meeting_data in meetings_data:
+            meeting = Meeting(**meeting_data)
+            db.session.add(meeting)
+            meetings.append(meeting)
+        db.session.commit()
+        
+        print(f"✅ {len(meetings)} reuniones creadas")
+        
+        # ==================== FINANZAS ====================
+        print("\n💰 Creando registros financieros...")
+        
+        finance_data = [
+            {
+                'project_id': created_projects[0].id if created_projects else None,
+                'type': 'gasto',
+                'amount': 5000,
+                'description': 'Pago de honorarios - Grabación',
+                'category': 'personal',
+                'date': now - timedelta(days=30)
+            },
+            {
+                'project_id': created_projects[0].id if created_projects else None,
+                'type': 'ingreso',
+                'amount': 15000,
+                'description': 'Pago parcial del cliente - Acme Corp',
+                'category': 'cliente',
+                'date': now - timedelta(days=25)
+            },
+            {
+                'project_id': created_projects[1].id if len(created_projects) > 1 else None,
+                'type': 'gasto',
+                'amount': 3000,
+                'description': 'Alquiler de equipo especial',
+                'category': 'equipos',
+                'date': now - timedelta(days=20)
+            },
+            {
+                'project_id': created_projects[1].id if len(created_projects) > 1 else None,
+                'type': 'gasto',
+                'amount': 2000,
+                'description': 'Servicio en la nube para renderizado',
+                'category': 'servicios',
+                'date': now - timedelta(days=15)
+            },
+            {
+                'project_id': created_projects[2].id if len(created_projects) > 2 else None,
+                'type': 'ingreso',
+                'amount': 25000,
+                'description': 'Anticipo - Global Solutions',
+                'category': 'cliente',
+                'date': now - timedelta(days=10)
+            },
+            {
+                'project_id': None,
+                'type': 'gasto',
+                'amount': 1500,
+                'description': 'Licencia software Adobe',
+                'category': 'software',
+                'date': now - timedelta(days=5)
+            },
+            {
+                'project_id': None,
+                'type': 'gasto',
+                'amount': 1000,
+                'description': 'Mantenimiento equipo',
+                'category': 'mantenimiento',
+                'date': now - timedelta(days=3)
+            },
+            {
+                'project_id': created_projects[0].id if created_projects else None,
+                'type': 'ingreso',
+                'amount': 20000,
+                'description': 'Pago final - Acme Corp',
+                'category': 'cliente',
+                'date': now - timedelta(days=1)
+            }
+        ]
+        
+        finances = []
+        for fin_data in finance_data:
+            fin = Finance(**fin_data)
+            db.session.add(fin)
+            finances.append(fin)
+        db.session.commit()
+        
+        print(f"✅ {len(finances)} registros financieros creados")
+        
         # ==================== RESUMEN ====================
         print("\n" + "="*50)
         print("✅ BASE DE DATOS POBLADA EXITOSAMENTE")
@@ -379,6 +605,9 @@ def seed_database():
         print(f"   • Items de inventario: {len(inventory_items)}")
         print(f"   • Solicitudes de inversión: {len(investments)}")
         print(f"   • Eventos de calendario: {len(calendar_events)}")
+        print(f"   • Recomendaciones: {len(recommendations)}")
+        print(f"   • Reuniones: {len(meetings)}")
+        print(f"   • Registros financieros: {len(finances)}")
         
         print("\n🔐 CREDENCIALES DE PRUEBA:")
         print("   Admin:")
@@ -387,6 +616,9 @@ def seed_database():
         print("\n   Cliente:")
         print("      Email: cliente@example.com")
         print("      Password: cliente123")
+        print("\n   Otro Cliente:")
+        print("      Email: otro@example.com")
+        print("      Password: otro123")
         
         print("\n" + "="*50)
 

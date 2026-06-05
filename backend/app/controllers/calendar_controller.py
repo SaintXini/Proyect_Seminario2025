@@ -17,7 +17,8 @@ class CalendarController:
         calendar_type = request.args.get('type')
         month = request.args.get('month', type=int)
         year = request.args.get('year', type=int)
-        return CalendarService.get_events(calendar_type, month, year)
+        events, status = CalendarService.get_events(calendar_type, month, year)
+        return jsonify(events), status
     
     @staticmethod
     def get(event_id):

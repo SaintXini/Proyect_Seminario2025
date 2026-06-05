@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, AlertCircle, TrendingUp, Target, BookOpen, Zap } from 'lucide-react';
+import { Plus, Edit, Trash2, AlertCircle, Zap, Target } from 'lucide-react';
 
 const iconMap = {
   'mic-2': '🎤',
@@ -10,12 +10,6 @@ const iconMap = {
   'check': '✅',
   'lightbulb': '💡',
   'zap': '⚡'
-};
-
-const priorityColors = {
-  alta: 'from-red-500 to-orange-500',
-  media: 'from-yellow-500 to-amber-500',
-  baja: 'from-blue-500 to-cyan-500'
 };
 
 const priorityBgColors = {
