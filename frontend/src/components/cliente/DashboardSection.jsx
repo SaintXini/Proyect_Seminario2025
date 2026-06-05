@@ -47,7 +47,8 @@ const DashboardSection = ({
       setLoading(true);
       
       // Cargar proyectos
-      const projectsData = await getProjects();
+      const projectsResponse = await getProjects();
+      const projectsData = projectsResponse.projects || projectsResponse || [];
       setActiveProjectsList(projectsData);
       
       // Calcular estadísticas
