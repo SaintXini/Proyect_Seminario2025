@@ -7,6 +7,8 @@ export const FinancialView = ({
   t,
   projects,
   investments,
+  finances,
+  financeSummary,
   setShowModal,
   setModalType,
   setEditingItem,
@@ -81,26 +83,47 @@ export const FinancialView = ({
 
         <div className={`p-6 rounded-2xl ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white border border-gray-200'}`}>
           <h3 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-            Distribución por Proyecto
+            Resumen Financiero
           </h3>
           <div className="space-y-3">
-            {projects.length === 0 ? (
-              <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                No hay proyectos registrados
-              </p>
-            ) : (
-              projects.map(project => (
-                <div key={project.id} className="flex justify-between">
-                  <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} truncate mr-2`}>
-                    {project.name}
-                  </span>
-                  <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Q{(project.budget || 0).toLocaleString()}
-                  </span>
-                </div>
-              ))
-            )}
+            <div className="flex justify-between">
+              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Ingresos</span>
+              <span className={`font-semibold text-green-500`}>
+                Q{(budgetData.total || 0).toLocaleString()}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Gastos</span>
+              <span className={`font-semibold text-red-500`}>
+                Q{(budgetData.spent || 0).toLocaleString()}
+              </span>
+            </div>
+            <div className="border-t border-gray-300 pt-3 flex justify-between">
+              <span className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Balance</span>
+              <span className={`font-bold text-lg ${budgetData.remaining >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                Q{(budgetData.remaining || 0).toLocaleString()}
+              </span>
+            </div>
           </div>
+          {finances && finances.length > 0 && (
+            <div className="mt-6">
+              <h4 className={`font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                Últimas Transacciones
+              </h4>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {finances.slice(0, 5).map(finance => (
+                  <div key={finance.id} className="flex justify-between text-sm">
+                    <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
+                      {finance.description}
+                    </span>
+                    <span className={finance.type === 'ingreso' ? 'text-green-500 font-semibold' : 'text-red-500 font-semibold'}>
+                      {finance.type === 'ingreso' ? '+' : '-'}Q{(finance.amount || 0).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

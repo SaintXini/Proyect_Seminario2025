@@ -120,7 +120,7 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin }) => {
           password: formData.password,
           telefono: formData.telefono,
           company: formData.company,
-          rol: selectedRole
+          role: selectedRole
         });
 
         alert(`${currentT.registerSuccess} ${selectedRole === 'admin' ? currentT.admin : currentT.client}`);
@@ -130,24 +130,16 @@ const LoginPage = ({ darkMode, language, onBackClick, onLogin }) => {
         setIsRegistering(false);
       } else {
         // Login
-        const response = await api.login({
-          email: formData.email,
-          password: formData.password
-        });
-
-        console.log('Respuesta del login:', response);
+        await onLogin(formData.email, formData.password);
         
-        // Llamar a la función onLogin si existe (esto manejará la navegación)
-        if (onLogin) {
-          onLogin(response.user);
-        } else {
-          // Fallback: redirigir manualmente si onLogin no existe
-          alert(`${currentT.loginSuccess}, ${response.user.name}!`);
-          if (response.user.rol === 'admin') {
-            navigate('/admin');
-          } else {
-            navigate('/client-dashboard');
-          }
+        // Obtener el usuario del localStorage (que fue guardado por onLogin)
+        const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user'));
+        
+        // Redirigir según el rol
+        if (user && user.role === 'admin') {
+          navigate('/admin');
+        } else if (user && user.role === 'client') {
+          navigate('/client-dashboard');
         }
       }
     } catch (error) {
