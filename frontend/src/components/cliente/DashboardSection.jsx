@@ -67,7 +67,11 @@ const DashboardSection = ({
 
       // Cargar eventos del calendario
       const currentDate = new Date();
-      const eventsResponse = await getCalendarEvents(...);
+      const eventsResponse = await getCalendarEvents(
+          'clients',
+          currentDate.getMonth() + 1,
+          currentDate.getFullYear()
+      );
       const eventsData = eventsResponse.events || eventsResponse || [];
       setUpcomingEvents(eventsData.slice(0, 3)); // Solo los próximos 3
 
