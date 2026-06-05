@@ -7,6 +7,8 @@ export const FinancialView = ({
   t,
   projects,
   investments,
+  finances,
+  financeSummary,
   setShowModal,
   setModalType,
   setEditingItem,
