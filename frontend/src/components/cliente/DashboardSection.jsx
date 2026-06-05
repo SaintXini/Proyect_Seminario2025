@@ -61,16 +61,14 @@ const DashboardSection = ({
       setStats(stats);
 
       // Cargar notificaciones
-      const notificationsData = await getNotifications();
-      setNotifications(notificationsData.slice(0, 5)); // Solo las últimas 5
+      const notificationsResponse = await getNotifications();
+      const notificationsData = notificationsResponse.notifications || notificationsResponse || [];
+      setNotifications(notificationsData.slice(0, 5));
 
       // Cargar eventos del calendario
       const currentDate = new Date();
-      const eventsData = await getCalendarEvents(
-        'clients',
-        currentDate.getMonth() + 1,
-        currentDate.getFullYear()
-      );
+      const eventsResponse = await getCalendarEvents(...);
+      const eventsData = eventsResponse.events || eventsResponse || [];
       setUpcomingEvents(eventsData.slice(0, 3)); // Solo los próximos 3
 
     } catch (error) {
