@@ -18,39 +18,38 @@ class FinanceController:
             return jsonify({'error': str(e)}), 500
 
     @staticmethod
-    def get_summary():
-        """Obtener resumen financiero"""
-        try:
-            total_ingresos = db.session.query(db.func.sum(Finance.amount))\
-                .filter_by(type='ingreso').scalar() or 0
-            total_gastos = db.session.query(db.func.sum(Finance.amount))\
-                .filter_by(type='gasto').scalar() or 0
-            
-            # Agrupar por mes
-            from sqlalchemy import func
-            gastos_por_mes = db.session.query(
-                func.strftime('%Y-%m', Finance.date),
-                func.sum(Finance.amount)
-            ).filter_by(type='gasto').group_by(
-                func.strftime('%Y-%m', Finance.date)
-            ).all()
-            
-            ingresos_por_mes = db.session.query(
-                func.strftime('%Y-%m', Finance.date),
-                func.sum(Finance.amount)
-            ).filter_by(type='ingreso').group_by(
-                func.strftime('%Y-%m', Finance.date)
-            ).all()
-            
-            return jsonify({
-                'total_ingresos': total_ingresos,
-                'total_gastos': total_gastos,
-                'balance': total_ingresos - total_gastos,
-                'gastos_por_mes': [{'mes': m, 'total': t} for m, t in gastos_por_mes],
-                'ingresos_por_mes': [{'mes': m, 'total': t} for m, t in ingresos_por_mes]
-            }), 200
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+def get_summary():
+    """Obtener resumen financiero"""
+    try:
+        total_ingresos = db.session.query(db.func.sum(Finance.amount))\
+            .filter_by(type='ingreso').scalar() or 0
+        total_gastos = db.session.query(db.func.sum(Finance.amount))\
+            .filter_by(type='gasto').scalar() or 0
+        
+        from sqlalchemy import func
+        gastos_por_mes = db.session.query(
+            func.to_char(Finance.date, 'YYYY-MM'),
+            func.sum(Finance.amount)
+        ).filter_by(type='gasto').group_by(
+            func.to_char(Finance.date, 'YYYY-MM')
+        ).all()
+        
+        ingresos_por_mes = db.session.query(
+            func.to_char(Finance.date, 'YYYY-MM'),
+            func.sum(Finance.amount)
+        ).filter_by(type='ingreso').group_by(
+            func.to_char(Finance.date, 'YYYY-MM')
+        ).all()
+        
+        return jsonify({
+            'total_ingresos': total_ingresos,
+            'total_gastos': total_gastos,
+            'balance': total_ingresos - total_gastos,
+            'gastos_por_mes': [{'mes': m, 'total': t} for m, t in gastos_por_mes],
+            'ingresos_por_mes': [{'mes': m, 'total': t} for m, t in ingresos_por_mes]
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
     @staticmethod
     def get(finance_id):
