@@ -13,7 +13,7 @@
 
 <!-- Reemplaza TU_VIDEO_ID con el ID de tu video de YouTube (los caracteres después de ?v=) -->
 [Ver demo del sistema](
-
+https://drive.google.com/file/d/1s96eYpqCP6lcJwf0vzFpXu-Ad4_QrLNI/view?usp=drive_link
 )
 
 ---
@@ -21,11 +21,9 @@
 ## 📸 Screenshots
 
 <!-- Sube tus imágenes a una carpeta llamada "assets" dentro del repo y reemplaza los nombres -->
-![Panel principal](frontend/src/assets/cliente.png)
-![Panel administrativo](<img width="1915" height="912" alt="Screenshot 2026-06-05 193950" src="https://github.com/user-attachments/assets/cbfcc02e-3356-425e-94d3-48aeb72e30aa" />
-)
-![Panel del cliente](<img width="1912" height="958" alt="Screenshot 2026-06-05 193934" src="https://github.com/user-attachments/assets/9170f718-5b95-4dcc-be9a-f80dacaf1b25" />
-)
+![Panel principal](frontend/src/assets/principal.png)
+![Panel administrativo](frontend/src/assets/admin.png)
+![Panel del cliente](frontend/src/assets/cliente.png)
 
 ---
 
