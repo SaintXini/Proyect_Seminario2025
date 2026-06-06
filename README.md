@@ -5,7 +5,7 @@
 >
 > Web platform for managing appointments and clients for an audiovisual company, featuring a dynamic interface with full backend and database integration.
  
-🔗 **Live demo:** [https://tgofilms1.onrender.com/](https://tgofilms1.onrender.com/)
+🔗 **Live demo:** [https://tgofilms1.onrender.com/](https://demo-tg-lxoe.onrender.com/)
  
 ---
  
