@@ -1,4 +1,3 @@
-
 # 🎬 Sistema de Control de Citas — TGO Films
 **Appointment Management System — TGO Films**
 
@@ -12,7 +11,7 @@
 
 ## 🎥 Demo
 
-[![Ver demo del sistema](https://img.youtube.com/vi/BsVQ37_w0c0/0.jpg)](https://youtu.be/BsVQ37_w0c0)
+https://github.com/user-attachments/assets/42f47605-8143-4c30-bf85-ef35736c4ada
 
 ---
 
