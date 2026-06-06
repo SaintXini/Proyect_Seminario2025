@@ -12,7 +12,7 @@
 ## 🎥 Demo
 
 <!-- Reemplaza TU_VIDEO_ID con el ID de tu video de YouTube (los caracteres después de ?v=) -->
-[Ver demo del sistema](
+(
 https://drive.google.com/file/d/1s96eYpqCP6lcJwf0vzFpXu-Ad4_QrLNI/view?usp=drive_link
 )
 
