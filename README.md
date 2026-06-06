@@ -21,7 +21,7 @@ https://drive.google.com/file/d/1s96eYpqCP6lcJwf0vzFpXu-Ad4_QrLNI/view?usp=drive
 ## 📸 Screenshots
 
 <!-- Sube tus imágenes a una carpeta llamada "assets" dentro del repo y reemplaza los nombres -->
-![Panel principal](frontend/src/assets/principal.png)
+![Panel principal](frontend/src/assets/princiap.png)
 ![Panel administrativo](frontend/src/assets/admin.png)
 ![Panel del cliente](frontend/src/assets/cliente.png)
 
