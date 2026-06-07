@@ -6,10 +6,20 @@ load_dotenv()
 
 
 def get_database_url():
-    """Obtiene el DATABASE_URL y agrega SSL si es Supabase"""
+    """Obtiene el DATABASE_URL, corrige prefijo y agrega SSL"""
     db_url = os.getenv('DATABASE_URL', '')
-    if db_url and 'supabase' in db_url and 'sslmode' not in db_url:
+    
+    if not db_url:
+        return db_url
+    
+    # Fix para SQLAlchemy moderno (no acepta postgres://)
+    if db_url.startswith('postgres://'):
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
+    
+    # Agregar SSL si no está presente (aplica a Render, Supabase, etc.)
+    if 'sslmode' not in db_url:
         db_url += '?sslmode=require'
+    
     return db_url
 
 
