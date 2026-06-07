@@ -52,6 +52,9 @@ def create_app(config_name=None):
             return {'status': 'OK', 'message': 'Backend funcionando correctamente'}, 200
         
         # Crear tablas
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            app.logger.warning(f"db.create_all() falló al inicio: {e}")
     
     return app
